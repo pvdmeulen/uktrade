@@ -83,7 +83,7 @@ data <- load_ots(month = 201901:201912, commodity = 2208, join_lookup = FALSE)
 data
 ```
 
-Specifying `commodity = 0` will load all commodities:
+Specifying `commodity = 0` will load all commodities aggregated (specifying `NULL` will load all detailed commodities and may take considerable time):
 
 ```{r load_ots example with join and commodity0}
 library(uktrade)

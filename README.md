@@ -151,7 +151,9 @@ data
 #> # A tibble: 0 x 0
 ```
 
-Specifying `commodity = 0` will load all commodities:
+Specifying `commodity = 0` will load all commodities aggregated
+(specifying `NULL` will load all detailed commodities and may take
+considerable time):
 
 ``` r
 library(uktrade)

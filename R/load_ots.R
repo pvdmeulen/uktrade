@@ -34,7 +34,7 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
 
   # If no commodities are chosen, load all (detailed):
 
-  if(is.null(commodity)){ "Loading detailed export and import data. To load all aggregated trade instead, specify commodity code: `commodity = 0`." }
+  if(is.null(commodity)){ message("Loading detailed export and import data. To load all aggregated trade instead, specify commodity code: `commodity = 0`.") }
 
   # Check for internet:
   check_internet()
@@ -65,13 +65,10 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
   filter <- paste0("(", mapply(element = args_list, name = names(args_list), FUN = function(element, name)
 
     # If the filter element is a commodity code
-    if(is.element(name, c("CommodityId", "CommoditySitcId")) & length(element) == 1){
+    if(is.element(name, "CommodityId") & is.null(element)){
 
-      # and "all" is chosen,
-      if(element == "all"){
-
-        # Use all commodity codes greater than or equal to 0 (which is all)
-        paste0(name, " ge 0")
+      # Use all commodity codes greater than or equal to 0 (which is all)
+      paste0(name, " ge 0")
 
       } else {
 
@@ -79,13 +76,6 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
         paste0(name, " eq ", element, collapse = " or ")
 
       }
-
-    } else {
-
-      # if not, use "FilterName1 eq FilterElement11 or FilterName1 eq FilterElement12" etc.
-      paste0(name, " eq ", element, collapse = " or ")
-
-    }
 
   ), ")", collapse = " and ")
 
