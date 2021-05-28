@@ -8,6 +8,8 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
+  tidy.opts = list(width.cutoff = 60),
+  tidy = TRUE,
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
@@ -48,7 +50,7 @@ All of these functions will output a `dataframe` object with the desired data, a
 
 This example uses the `load_custom()` function to replicate the example given in the [API documentation](https://www.uktradeinfo.com/api-documentation/) for finding all traders that exported ‘Live horses (excl. pure-bred for breeding)’ from the ‘CB8’ post code in 2019:
 
-```{r example}
+```{r load_custom example, }
 library(uktrade)
 
 data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)")
