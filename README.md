@@ -63,15 +63,14 @@ library(uktrade)
 data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)")
 
 head(data)
+#> # A tibble: 2 x 11
+#>   CommodityId Cn8Code  Hs2Code Hs4Code Hs6Code Hs2Description Hs4Description    
+#>         <int> <chr>    <chr>   <chr>   <chr>   <chr>          <chr>             
+#> 1     1012910 01012910 01      0101    010129  Live animals   Live horses, asse~
+#> 2     1012990 01012990 01      0101    010129  Live animals   Live horses, asse~
+#> # ... with 4 more variables: Hs6Description <chr>, SitcCommodityCode <chr>,
+#> #   Cn8LongDescription <chr>, Exports <list>
 ```
-
-<div data-pagedtable="false">
-
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["CommodityId"],"name":[1],"type":["int"],"align":["right"]},{"label":["Cn8Code"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Hs2Code"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Hs4Code"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Hs6Code"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Hs2Description"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Hs4Description"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Hs6Description"],"name":[8],"type":["chr"],"align":["left"]},{"label":["SitcCommodityCode"],"name":[9],"type":["chr"],"align":["left"]},{"label":["Cn8LongDescription"],"name":[10],"type":["chr"],"align":["left"]},{"label":["Exports"],"name":[11],"type":["list"],"align":["right"]}],"data":[{"1":"1012910","2":"01012910","3":"01","4":"0101","5":"010129","6":"Live animals","7":"Live horses, asses, mules and hinnies","8":"Live horses (excl. pure-bred for breeding)","9":"00150","10":"Horses for slaughter","11":"<df[,0] [0 × 0]>","_rn_":"1"},{"1":"1012990","2":"01012990","3":"01","4":"0101","5":"010129","6":"Live animals","7":"Live horses, asses, mules and hinnies","8":"Live horses (excl. pure-bred for breeding)","9":"00150","10":"Live horses (excl. for slaughter, pure-bred for breeding)","11":"<df[,4] [27 × 4]>","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-
-</div>
 
 What is special about using `README.Rmd` instead of just `README.md`?
 You can include R chunks like so:
