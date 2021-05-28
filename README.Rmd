@@ -74,11 +74,20 @@ data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011), join_
 data
 ```
 
-Note that HMRC's API isn't working entirely as expected at the moment. At the moment, loading HS4 code 2208 returns an empty dataframe:
+Note that HMRC's API isn't working entirely as expected at the moment. At the moment, loading aggregate data (such as all spirits, HS4 code 2208) returns an empty dataframe:
 
 ```{r load_ots example with join and HS4}
 library(uktrade)
 data <- load_ots(month = 201901:201912, commodity = 2208, join_lookup = FALSE)
+
+data
+```
+
+Specifying `commodity = 0` will load all commodities:
+
+```{r load_ots example with join and commodity0}
+library(uktrade)
+data <- load_ots(month = 201901, commodity = 0, join_lookup = FALSE)
 
 data
 ```

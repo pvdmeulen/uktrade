@@ -140,7 +140,8 @@ data
 ```
 
 Note that HMRC’s API isn’t working entirely as expected at the moment.
-At the moment, loading HS4 code 2208 returns an empty dataframe:
+At the moment, loading aggregate data (such as all spirits, HS4 code
+2208) returns an empty dataframe:
 
 ``` r
 library(uktrade)
@@ -148,6 +149,30 @@ data <- load_ots(month = 201901:201912, commodity = 2208, join_lookup = FALSE)
 
 data
 #> # A tibble: 0 x 0
+```
+
+Specifying `commodity = 0` will load all commodities:
+
+``` r
+library(uktrade)
+data <- load_ots(month = 201901, commodity = 0, join_lookup = FALSE)
+
+data
+#> # A tibble: 136 x 10
+#>    MonthId FlowTypeId SuppressionIndex CommodityId CommoditySitcId CountryId
+#>      <int>      <int>            <int>       <int>           <int>     <int>
+#>  1  201901          1                0           0            -990       959
+#>  2  201901          2                0           0            -990       959
+#>  3  201901          1                0           0            -980       959
+#>  4  201901          2                0           0            -980       959
+#>  5  201901          1                0           0            -970       959
+#>  6  201901          2                0           0            -970       959
+#>  7  201901          1                0           0            -960       959
+#>  8  201901          2                0           0            -960       959
+#>  9  201901          1                0           0            -930       959
+#> 10  201901          2                0           0            -930       959
+#> # ... with 126 more rows, and 4 more variables: PortId <int>, Value <dbl>,
+#> #   NetMass <lgl>, SuppUnit <lgl>
 ```
 
 ### RTS
