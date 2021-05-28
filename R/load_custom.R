@@ -7,16 +7,17 @@
 #' @param base_url Base URL for use in API. Defaults to https://api.uktradeinfo.com.
 #' @param endpoint Endpoint for use in API. Takes a single character string with no default.
 #' @param custom_search Custom query. Takes a single character string with no default.
-#' @param request A non-negative integer value to keep track of the starting number of requests made. Defaults to zero. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
 #' @param skip_interval A non-negative integer value showing the skip interval for paginated results. Defaults to 30,000 rows.
 #' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
+#' @param request A non-negative integer value to keep track of the starting number of requests made. Defaults to zero. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
+#' @param timer A non-negative integer value (seconds) to keep track of the time taken so far. Defaults to NULL. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
 #'
 #' @importFrom httr GET
-#' @importFrom curl has_internet
 #' @importFrom dplyr bind_rows
+#' @importFrom dplyr as_tibble
 #'
 #' @keywords hmrc api data
-#' @rdname loadcustom
+#' @rdname load_custom
 #' @export
 #'
 #' @return Returns a dataframe or tibble containing the API response
@@ -29,8 +30,7 @@
 #' nrow(data)
 #' }
 
-
-load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, custom_search, request = 0, skip_interval = 30000, output = "tibble"){
+load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, custom_search = "", request = 0, skip_interval = 30000, timer = NULL, output = "tibble"){
 
   check_internet()
 
@@ -50,7 +50,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
     url <- paste0(base_url, "/", endpoint, custom_search, skip_suffix)
 
     # Start timer:
-    timer <- proc.time()
+    timer <- if(is.null(timer)){ proc.time() } else { timer }
 
     # Get API response:
     response <- httr::GET(URLencode(url))
@@ -65,12 +65,12 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
     elapsed_time <- proc.time()[[3]] - timer[[3]]
 
     # Check if we've reached API limit (60/min):
-    if(request > 59 & elapsed_time < 60){
+    if(request == 59 & elapsed_time < 60){
 
       # Rest for 5 seconds:
-      message(paste0("Reached query limit (60/min). Pausing for ", 60-elapsed_time+1, " seconds."))
+      message(paste0("Reached query limit (60/min). Pausing for ", 60-elapsed_time+5, " seconds."))
 
-      Sys.sleep(60-elapsed_time+1)
+      Sys.sleep(60-elapsed_time+5)
 
     }
 
