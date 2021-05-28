@@ -18,20 +18,20 @@ knitr::opts_chunk$set(
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-The goal of uktrade is to provide convenient wrapper functions for analysing HMRC data in R.
+The goal of `uktrade` is to provide convenient wrapper functions for analysing HMRC data in R.
 
 ## Installation
 
-You can install the released version of uktrade from this GitHub repository using `remotes`:
+You can install the latest version of `uktrade` from this GitHub repository using `remotes`:
 
 ``` r
-remotes::install_github()
+remotes::install_github("pvdmeulen/uktrade")
 ```
 ## HMRC data
 
 Her Majesty's Revenue & Customs (HMRC) is the UK's customs authority and a non-ministerial department of the United Kingdom Government. Data on UK trade is available on their [uktradeinfo.com](https://www.uktradeinfo.com/) website, which is collected through a combination of customs declarations and Intrastat surveys (in the case of [some EU trade](https://www.gov.uk/intrastat)).
 
-In the beginning of 2021, the [uktradeinfo.com](https://www.uktradeinfo.com/) website was updated. This update also introduced an [API](https://www.uktradeinfo.com/api-documentation/) (Application Programming Interface) for accessing bulk trade (and trader) data. For smaller trade data extracts (< 30,000 rows), the [online tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
+In the beginning of 2021, the [uktradeinfo.com](https://www.uktradeinfo.com/) website was updated. This update also introduced an Application Programming Interface (API) for accessing bulk trade (and trader) data. For smaller trade data extracts (< 30,000 rows), the [online tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
 ## This package
 
@@ -46,9 +46,14 @@ All of these functions will output a `dataframe` object with the desired data, a
 
 ## Example
 
+This example uses the `load_custom()` function to replicate the example given in the [API documentation](https://www.uktradeinfo.com/api-documentation/) for finding all traders that exported ‘Live horses (excl. pure-bred for breeding)’ from the ‘CB8’ post code in 2019:
+
 ```{r example}
 library(uktrade)
-## basic example code
+
+data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)")
+
+head(data)
 ```
 
 What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:

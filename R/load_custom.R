@@ -50,7 +50,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
     timer <- proc.time()
 
     # Get API response:
-    response <- GET(URLencode(url))
+    response <- httr::GET(URLencode(url))
 
     # Check status:
     #check_status(response)
@@ -71,7 +71,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
 
     }
 
-    content <- fromJSON(rawToChar(response$content))
+    content <- jsonlite::fromJSON(rawToChar(response$content))
 
     # Put response into data list:
 

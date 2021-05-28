@@ -8,16 +8,16 @@
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-The goal of uktrade is to provide convenient wrapper functions for
+The goal of `uktrade` is to provide convenient wrapper functions for
 analysing HMRC data in R.
 
 ## Installation
 
-You can install the released version of uktrade from this GitHub
+You can install the latest version of `uktrade` from this GitHub
 repository using `remotes`:
 
 ``` r
-remotes::install_github()
+remotes::install_github("pvdmeulen/uktrade")
 ```
 
 ## HMRC data
@@ -31,10 +31,9 @@ surveys (in the case of [some EU trade](https://www.gov.uk/intrastat)).
 
 In the beginning of 2021, the
 [uktradeinfo.com](https://www.uktradeinfo.com/) website was updated.
-This update also introduced an
-[API](https://www.uktradeinfo.com/api-documentation/) (Application
-Programming Interface) for accessing bulk trade (and trader) data. For
-smaller trade data extracts (&lt; 30,000 rows), the [online
+This update also introduced an Application Programming Interface (API)
+for accessing bulk trade (and trader) data. For smaller trade data
+extracts (&lt; 30,000 rows), the [online
 tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
 ## This package
@@ -52,9 +51,33 @@ data, and are able to keep track of paginated results (in batches of
 
 ## Example
 
+This example uses the `load_custom()` function to replicate the example
+given in the [API
+documentation](https://www.uktradeinfo.com/api-documentation/) for
+finding all traders that exported ‘Live horses (excl. pure-bred for
+breeding)’ from the ‘CB8’ post code in 2019:
+
 ``` r
 library(uktrade)
-## basic example code
+
+data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)")
+
+head(data)
+#>   CommodityId  Cn8Code Hs2Code Hs4Code Hs6Code Hs2Description
+#> 1     1012910 01012910      01    0101  010129   Live animals
+#> 2     1012990 01012990      01    0101  010129   Live animals
+#>                          Hs4Description
+#> 1 Live horses, asses, mules and hinnies
+#> 2 Live horses, asses, mules and hinnies
+#>                               Hs6Description SitcCommodityCode
+#> 1 Live horses (excl. pure-bred for breeding)             00150
+#> 2 Live horses (excl. pure-bred for breeding)             00150
+#>                                          Cn8LongDescription
+#> 1                                      Horses for slaughter
+#> 2 Live horses (excl. for slaughter, pure-bred for breeding)
+#>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Exports
+#> 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     NULL
+#> 2 34152, 34152, 34152, 34152, 34152, 137089, 165616, 78423, 132859, 216120, 216120, 216120, 216120, 216120, 216120, 216120, 216120, 216120, 216120, 50485, 50485, 50485, 50485, 50485, 50485, 50485, 50485, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 1012990, 201903, 201905, 201910, 201911, 201912, 201912, 201909, 201909, 201911, 201901, 201903, 201904, 201905, 201907, 201908, 201909, 201910, 201911, 201912, 201903, 201905, 201907, 201908, 201909, 201910, 201911, 201912, 34152, 34152, 34152, 34152, 34152, 137089, 165616, 78423, 132859, 216120, 216120, 216120, 216120, 216120, 216120, 216120, 216120, 216120, 216120, 50485, 50485, 50485, 50485, 50485, 50485, 50485, 50485, JANAH MANAGEMENT COMPANY LTD, JANAH MANAGEMENT COMPANY LTD, JANAH MANAGEMENT COMPANY LTD, JANAH MANAGEMENT COMPANY LTD, JANAH MANAGEMENT COMPANY LTD, JUDDMONTE FARMS LIMITED, FAWZI ABDULLA NASS, VARIAN STABLE LTD, COWELL FARMS, BBA SHIPPING & TRANSPORT LIMITED, BBA SHIPPING & TRANSPORT LIMITED, BBA SHIPPING & TRANSPORT LIMITED, BBA SHIPPING & TRANSPORT LIMITED, BBA SHIPPING & TRANSPORT LIMITED, BBA SHIPPING & TRANSPORT LIMITED, BBA SHIPPING & TRANSPORT LIMITED, BBA SHIPPING & TRANSPORT LIMITED, BBA SHIPPING & TRANSPORT LIMITED, BBA SHIPPING & TRANSPORT LIMITED, TATTERSALLS LTD, TATTERSALLS LTD, TATTERSALLS LTD, TATTERSALLS LTD, TATTERSALLS LTD, TATTERSALLS LTD, TATTERSALLS LTD, TATTERSALLS LTD, JANAH OFFICE, JANAH OFFICE, JANAH OFFICE, JANAH OFFICE, JANAH OFFICE, BANSTEAD MANOR STUD, AISLABIE STUD, 49 BURY ROAD, HEATH HOUSE, QUEENSBERRY MEWS, QUEENSBERRY MEWS, QUEENSBERRY MEWS, QUEENSBERRY MEWS, QUEENSBERRY MEWS, QUEENSBERRY MEWS, QUEENSBERRY MEWS, QUEENSBERRY MEWS, QUEENSBERRY MEWS, QUEENSBERRY MEWS, TERRACE HOUSE, TERRACE HOUSE, TERRACE HOUSE, TERRACE HOUSE, TERRACE HOUSE, TERRACE HOUSE, TERRACE HOUSE, TERRACE HOUSE, DALHAM HALL STUD, DALHAM HALL STUD, DALHAM HALL STUD, DALHAM HALL STUD, DALHAM HALL STUD, CHEVELEY, LEY ROAD, NEWMARKET, BOTTISHAM HEATH STUD, HIGH STREET, HIGH STREET, HIGH STREET, HIGH STREET, HIGH STREET, HIGH STREET, HIGH STREET, HIGH STREET, HIGH STREET, HIGH STREET, 125 HIGH STREET, 125 HIGH STREET, 125 HIGH STREET, 125 HIGH STREET, 125 HIGH STREET, 125 HIGH STREET, 125 HIGH STREET, 125 HIGH STREET, DUCHESS DRIVE, DUCHESS DRIVE, DUCHESS DRIVE, DUCHESS DRIVE, DUCHESS DRIVE, NEWMARKET, STETCHWORTH, SUFFOLK, SIX MILE BOTTOM, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, NEWMARKET, SUFFOLK, NEWMARKET, , NEWMARKET, , , , , , , , , , , SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, SUFFOLK, , SUFFOLK, , SUFFOLK, , , , , , , , , , , , , , , , , , , CB8 9HE, CB8 9HE, CB8 9HE, CB8 9HE, CB8 9HE, CB8 9RD, CB8 9TS, CB8 7BY, CB8 0TT, CB8 9AE, CB8 9AE, CB8 9AE, CB8 9AE, CB8 9AE, CB8 9AE, CB8 9AE, CB8 9AE, CB8 9AE, CB8 9AE, CB8 9BT, CB8 9BT, CB8 9BT, CB8 9BT, CB8 9BT, CB8 9BT, CB8 9BT, CB8 9BT
 ```
 
 What is special about using `README.Rmd` instead of just `README.md`?
