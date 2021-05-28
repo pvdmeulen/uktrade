@@ -9,7 +9,7 @@
 <!-- badges: end -->
 
 The goal of `uktrade` is to provide convenient wrapper functions for
-analysing HMRC data in R.
+loading HMRC data in R.
 
 ## Installation
 

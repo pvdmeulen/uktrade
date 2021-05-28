@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-The goal of `uktrade` is to provide convenient wrapper functions for analysing HMRC data in R.
+The goal of `uktrade` is to provide convenient wrapper functions for loading HMRC data in R.
 
 ## Installation
 

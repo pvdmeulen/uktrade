@@ -32,6 +32,8 @@
 
 load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, custom_search, request = 0, skip_interval = 30000, output = "tibble"){
 
+  check_internet()
+
   done <- FALSE
   data <- list()
 
@@ -54,7 +56,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
     response <- httr::GET(URLencode(url))
 
     # Check status:
-    #check_status(response)
+    check_status(response)
 
     # Add request:
     request <- request + 1
