@@ -40,10 +40,10 @@ In the beginning of 2021, the [uktradeinfo.com](https://www.uktradeinfo.com/) we
 
 This package contains four functions:
 
-* `load_ots()`: a function for loading Overseas Trade Statistics data
-* `load_rts()`: a function for loading Regional Trade Statistics data
-* `load_trader()`: a function for loading trader data
-* `load_custom()`: a function for loading a custom URL
+* `load_ots()`: a function for loading Overseas Trade Statistics data (work in progress)
+* `load_rts()`: a function for loading Regional Trade Statistics data (future work)
+* `load_trader()`: a function for loading trader data (future work)
+* `load_custom()`: a function for loading a custom URL (work in progress)
 
 All of these functions will output a `dataframe` object with the desired data, and are able to keep track of paginated results (in batches of 30,000 rows) as well as the API request limit of 60 requests per minute.
 

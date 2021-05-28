@@ -40,9 +40,12 @@ tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 This package contains four functions:
 
 -   `load_ots()`: a function for loading Overseas Trade Statistics data
+    (work in progress)
 -   `load_rts()`: a function for loading Regional Trade Statistics data
--   `load_trader()`: a function for loading trader data
--   `load_custom()`: a function for loading a custom URL
+    (future work)
+-   `load_trader()`: a function for loading trader data (future work)
+-   `load_custom()`: a function for loading a custom URL (work in
+    progress)
 
 All of these functions will output a `dataframe` object with the desired
 data, and are able to keep track of paginated results (in batches of
