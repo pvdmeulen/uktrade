@@ -49,13 +49,27 @@ All of these functions will output a `dataframe` object with the desired
 data, and are able to keep track of paginated results (in batches of
 30,000 rows) as well as the API request limit of 60 requests per minute.
 
-## Example
+## Example using OTS and RTS data
+
+These functions are convenient wrappers for loading trade data - either
+UK trade data using OTS, or regional UK trade data using RTS. These
+functions will load the raw data and join results with lookups obtained
+from the API (using, for example, the /Commodity and /Country
+endpoints). This makes data easy to read by humans, but also larger
+(more text). Disabling the lookup join is possible by setting
+`join_lookup = FALSE` in these functions.
+
+## Example using trader data
+
+## Example using a custom URL
 
 This example uses the `load_custom()` function to replicate the example
 given in the [API
 documentation](https://www.uktradeinfo.com/api-documentation/) for
 finding all traders that exported ‘Live horses (excl. pure-bred for
-breeding)’ from the ‘CB8’ post code in 2019:
+breeding)’ from the ‘CB8’ post code in 2019. This way of loading data is
+possible, but will require more data manipulation after obtaining the
+results.
 
 ``` r
 library(uktrade)
@@ -74,9 +88,10 @@ data
 ```
 
 ``` r
-# Note that the expanded column, Exports, is in a nested
-# <list> format. When unnested using tidyr::unnest(), we
-# can see the final results:
+# Note that the first expanded column, Exports, is in a nested <list> format.
+# When unnested using tidyr::unnest(), we can see the final results.  Note also
+# that the second expanded column, Trader, contains 8 columns (which are
+# TraderId, CompanyName, five Address columns, and PostCode).
 
 library(tidyr)
 tidyr::unnest(data, Exports, names_repair = "unique")
