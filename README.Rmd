@@ -52,12 +52,20 @@ All of these functions will output a `dataframe` object with the desired data, a
 
 This example uses the `load_custom()` function to replicate the example given in the [API documentation](https://www.uktradeinfo.com/api-documentation/) for finding all traders that exported ‘Live horses (excl. pure-bred for breeding)’ from the ‘CB8’ post code in 2019:
 
-```{r load_custom example, }
+```{r load_custom example}
 library(uktrade)
+data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)", output = "tibble")
 
-data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)")
+# Results are now in a tibble:
+data
+```
 
-head(data)
+
+```{r unnesting columns}
+# Note that the expanded column, Exports, is in a nested <list> format. When unnested using tidyr::unnest(), we can see the final results:
+
+library(tidyr)
+tidyr::unnest(data, Exports, names_repair = "unique")
 ```
 
 ## MIT License

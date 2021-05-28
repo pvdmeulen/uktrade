@@ -59,10 +59,11 @@ breeding)’ from the ‘CB8’ post code in 2019:
 
 ``` r
 library(uktrade)
+data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)", 
+    output = "tibble")
 
-data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)")
-
-head(data)
+# Results are now in a tibble:
+data
 #> # A tibble: 2 x 11
 #>   CommodityId Cn8Code  Hs2Code Hs4Code Hs6Code Hs2Description Hs4Description    
 #>         <int> <chr>    <chr>   <chr>   <chr>   <chr>          <chr>             
@@ -70,6 +71,34 @@ head(data)
 #> 2     1012990 01012990 01      0101    010129  Live animals   Live horses, asse~
 #> # ... with 4 more variables: Hs6Description <chr>, SitcCommodityCode <chr>,
 #> #   Cn8LongDescription <chr>, Exports <list>
+```
+
+``` r
+# Note that the expanded column, Exports, is in a nested
+# <list> format. When unnested using tidyr::unnest(), we
+# can see the final results:
+
+library(tidyr)
+tidyr::unnest(data, Exports, names_repair = "unique")
+#> New names:
+#> * CommodityId -> CommodityId...1
+#> * CommodityId -> CommodityId...12
+#> # A tibble: 27 x 14
+#>    CommodityId...1 Cn8Code Hs2Code Hs4Code Hs6Code Hs2Description Hs4Description
+#>              <int> <chr>   <chr>   <chr>   <chr>   <chr>          <chr>         
+#>  1         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#>  2         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#>  3         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#>  4         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#>  5         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#>  6         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#>  7         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#>  8         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#>  9         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#> 10         1012990 010129~ 01      0101    010129  Live animals   Live horses, ~
+#> # ... with 17 more rows, and 7 more variables: Hs6Description <chr>,
+#> #   SitcCommodityCode <chr>, Cn8LongDescription <chr>, TraderId <int>,
+#> #   CommodityId...12 <int>, MonthId <int>, Trader <df[,8]>
 ```
 
 ## MIT License

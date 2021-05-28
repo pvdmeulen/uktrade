@@ -9,6 +9,7 @@
 #' @param custom_search Custom query. Takes a single character string with no default.
 #' @param request A non-negative integer value to keep track of the starting number of requests made. Defaults to zero. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
 #' @param skip_interval A non-negative integer value showing the skip interval for paginated results. Defaults to 30,000 rows.
+#' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #'
 #' @importFrom httr GET
 #' @importFrom curl has_internet
@@ -18,7 +19,7 @@
 #' @rdname loadcustom
 #' @export
 #'
-#' @return Returns a dataframe containing the API response
+#' @return Returns a dataframe or tibble containing the API response
 #' @examples
 #' \dontrun{
 #' # Obtaining all exports of single malt Scotch whisky and bottled gin between January 2000 and December 2020 via the OTS endpoint:
@@ -29,7 +30,7 @@
 #' }
 
 
-load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, custom_search, request = 0, skip_interval = 30000){
+load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, custom_search, request = 0, skip_interval = 30000, output = "tibble"){
 
   done <- FALSE
   data <- list()
@@ -90,6 +91,8 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
 
   # Return data:
 
-  return(dplyr::bind_rows(data))
+  data <- if(output == "df") { dplyr::bind_rows(data) } else if(output == "tibble") { dplyr::as_tibble(dplyr::bind_rows(data)) }
+
+  return(data)
 
 } # End of function
