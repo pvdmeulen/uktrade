@@ -178,7 +178,8 @@ data
 ### RTS
 
 Loading all UK regional trade of 2-digit SITC Division ‘00 - Live
-animals other than animals of division 03’ for 2019 is done like so:
+animals other than animals of division 03’ for 2019 is done by
+specifying `sitc = 00` (which means leading zeros are removed):
 
 ``` r
 library(uktrade)
