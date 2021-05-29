@@ -22,8 +22,8 @@ remotes::install_github("pvdmeulen/uktrade")
 
 ## HMRC data
 
-Her Majesty’s Revenue & Customs (HMRC) is the UK’s customs authority.
-Data on UK trade is available on their
+Her Majesty’s Revenue & Customs (HMRC) is the :uk: UK’s customs
+authority. Data on UK trade is available on their
 [uktradeinfo.com](https://www.uktradeinfo.com/) website, which is
 collected through a combination of customs declarations and Intrastat
 surveys (in the case of [some EU trade](https://www.gov.uk/intrastat)).
@@ -39,13 +39,12 @@ tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
 This package contains four functions:
 
--   `load_ots()`: a function for loading Overseas Trade Statistics data
-    (work in progress)
--   `load_rts()`: a function for loading Regional Trade Statistics data
-    (future work)
--   `load_trader()`: a function for loading trader data (future work)
--   `load_custom()`: a function for loading a custom URL (work in
-    progress)
+| Function        | Description                                           | Status                              |
+|-----------------|-------------------------------------------------------|-------------------------------------|
+| `load_ots()`    | a function for loading Overseas Trade Statistics data | :yellow\_circle: *work in progress* |
+| `load_rts()`    | a function for loading Regional Trade Statistics data | :yellow\_circle: *work in progress* |
+| `load_trader()` | a function for loading trader data                    | :red\_circle: *planned*             |
+| `load_custom()` | a function for loading a custom URL                   | :yellow\_circle: *work in progress* |
 
 All of these functions will output a `dataframe` object (or `tibble`)
 with the desired data, and are able to keep track of paginated results
