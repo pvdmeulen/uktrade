@@ -109,15 +109,6 @@ commodity_lookup <- load_custom(endpoint = "Commodity")
 
 # Or join automatically with the `join_lookup = TRUE` option:
 data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011), join_lookup = TRUE)
-#> Warning: package 'dplyr' was built under R version 4.0.5
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 
 data
 #> # A tibble: 4,663 x 39

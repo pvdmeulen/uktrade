@@ -15,6 +15,7 @@
 #' @param join_lookup A logical value indicating whether results should be joined with lookups from the API. Defaults to TRUE. Setting to FALSE will return a smaller but less human-readable dataframe containing only codes.
 #'
 #' @importFrom dplyr left_join
+#' @importFrom dplyr select
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr as_tibble
 #' @importFrom magrittr `%>%`
@@ -179,8 +180,6 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
     )
 
     # Join ----------------------------------------------------------------------------------------
-
-    library(dplyr)
 
     ots_data <- ots_data %>%
       left_join(flow_lookup, by = "FlowTypeId") %>%

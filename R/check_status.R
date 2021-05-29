@@ -1,12 +1,6 @@
-# BASIC CHECKS ====================================================================================
+# BASIC CHECK FOR API RESPONSE STATUS =============================================================
 
-#' @importFrom curl has_internet
-#' @importFrom httr status_code
-
-check_internet <- function(){
-  if(curl::has_internet() == FALSE){stop("No internet connection found.")}
-}
-
+#' A function to check the API's response. Used within `load_*()` functions.
 #' @importFrom httr status_code
 
 check_status <- function(res){
