@@ -2,8 +2,7 @@
 # LOAD_OTS FUNCTION ===============================================================================
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# A function for loading OTS data via HMRC's API.
-
+#' A function for loading OTS data via HMRC's API.
 #' @param month The month(s) to be loaded in the form of one or more integers of the format YYYYMM. Defaults to NULL (all months).
 #' @param flow The trade flow to be loaded. Takes one ore more integers (1, 2, 3, and/or 4), where 1 is EU imports, 2 is EU exports, 3 is non-EU imports, and 4 is non-EU exports. Defaults to NULL (all flows).
 #' @param commodity One or more HS2, HS4, HS6, or CN8 commodity codes in the form of a numeric vector. Defaults to NULL (all commodities).
@@ -26,6 +25,10 @@
 #'
 #' @return Returns a dataframe or tibble
 #' @examples
+#' \dontrun{
+#' # Obtaining all trade of single malt Scotch whisky and bottled gin between in 2019 via the OTS endpoint:
+#' data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011))
+#' }
 
 # Function:
 

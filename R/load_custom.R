@@ -2,8 +2,7 @@
 # LOAD_CUSTOM FUNCTION ===============================================================================
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# A function for loading a custom dataset via HMRC's API.
-
+#' A function for loading a custom dataset via HMRC's API.
 #' @param base_url Base URL for use in API. Defaults to https://api.uktradeinfo.com.
 #' @param endpoint Endpoint for use in API. Takes a single character string with no default.
 #' @param custom_search Custom query. Takes a single character string with no default.
