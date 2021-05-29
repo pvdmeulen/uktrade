@@ -121,7 +121,7 @@ data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011), join_
 #>     intersect, setdiff, setequal, union
 
 data
-#> # A tibble: 4,663 x 36
+#> # A tibble: 4,663 x 39
 #>    MonthId FlowTypeId FlowTypeDescript~ SuppressionIndex SuppressionDesc Hs2Code
 #>      <int>      <int> <chr>                        <dbl> <chr>           <chr>  
 #>  1  201901          1 "EU Imports     ~                0 <NA>            22     
@@ -134,14 +134,15 @@ data
 #>  8  201908          1 "EU Imports     ~                0 <NA>            22     
 #>  9  201909          1 "EU Imports     ~                0 <NA>            22     
 #> 10  201910          1 "EU Imports     ~                0 <NA>            22     
-#> # ... with 4,653 more rows, and 30 more variables: Hs2Description <chr>,
+#> # ... with 4,653 more rows, and 33 more variables: Hs2Description <chr>,
 #> #   Hs4Code <chr>, Hs4Description <chr>, Hs6Code <chr>, Hs6Description <chr>,
 #> #   Cn8Code <chr>, Cn8LongDescription <chr>, Sitc1Code <chr>, Sitc1Desc <chr>,
 #> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
 #> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
 #> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>,
 #> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>,
-#> #   PortId <int>, PortCodeNumeric <chr>, PortCodeAlpha <chr>, PortName <chr>
+#> #   PortId <int>, PortCodeNumeric <chr>, PortCodeAlpha <chr>, PortName <chr>,
+#> #   Value <dbl>, NetMass <dbl>, SuppUnit <dbl>
 ```
 
 Note that HMRC’s API isn’t working entirely as expected at the moment.
@@ -184,7 +185,35 @@ data
 
 ### RTS
 
-RTS code is a work in progress…
+Loading all UK regional trade of 2-digit SITC Division ‘00 - Live
+animals other than animals of division 03’ for 2019 is done like so:
+
+``` r
+library(uktrade)
+data <- load_rts(month = 201901:201912, sitc = 0, join_lookup = TRUE)
+
+data
+#> # A tibble: 2,043 x 26
+#>    MonthId FlowTypeId FlowTypeDescription  Sitc1Code Sitc1Desc  CommoditySitc2Id
+#>      <int>      <int> <chr>                <chr>     <chr>                 <int>
+#>  1  201901          3 "Non-EU Imports    ~ 0         Food & li~                0
+#>  2  201904          3 "Non-EU Imports    ~ 0         Food & li~                0
+#>  3  201907          3 "Non-EU Imports    ~ 0         Food & li~                0
+#>  4  201910          3 "Non-EU Imports    ~ 0         Food & li~                0
+#>  5  201901          3 "Non-EU Imports    ~ 0         Food & li~                0
+#>  6  201904          3 "Non-EU Imports    ~ 0         Food & li~                0
+#>  7  201907          3 "Non-EU Imports    ~ 0         Food & li~                0
+#>  8  201910          3 "Non-EU Imports    ~ 0         Food & li~                0
+#>  9  201901          3 "Non-EU Imports    ~ 0         Food & li~                0
+#> 10  201904          3 "Non-EU Imports    ~ 0         Food & li~                0
+#> # ... with 2,033 more rows, and 20 more variables: Sitc2Code <chr>,
+#> #   Sitc2Desc <chr>, GovRegionId <int>, GovRegionCodeNumeric <chr>,
+#> #   GovRegionGroupCodeAlpha <chr>, GovRegionName <chr>,
+#> #   GovRegionGroupName <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
+#> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>,
+#> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>,
+#> #   Value <dbl>, NetMass <dbl>
+```
 
 ## Example using trader data
 

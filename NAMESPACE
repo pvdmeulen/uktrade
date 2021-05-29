@@ -2,6 +2,7 @@
 
 export(load_custom)
 export(load_ots)
+export(load_rts)
 importFrom(curl,has_internet)
 importFrom(dplyr,as_tibble)
 importFrom(dplyr,bind_rows)
@@ -9,3 +10,5 @@ importFrom(dplyr,left_join)
 importFrom(httr,GET)
 importFrom(httr,status_code)
 importFrom(magrittr,`%>%`)
+importFrom(stringr,str_extract_all)
+importFrom(stringr,str_replace)
