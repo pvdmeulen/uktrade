@@ -244,12 +244,13 @@ data
 #> #   Cn8LongDescription <chr>, Exports <list>
 ```
 
-``` r
-# Note that the first expanded column, Exports, is in a nested <list> format.
-# When unnested using tidyr::unnest(), we can see the final results.  Note also
-# that the second expanded column, Trader, contains 8 columns (which are
-# TraderId, CompanyName, five Address columns, and PostCode).
+Note that the expanded columns, Exports and Trader, both need to be
+expanded as they are contained in a nested <list> column. When unnested
+using `tidyr::unnest()`, we can see the final results. The second
+expanded column (Trader) itself contains 8 columns (which are TraderId,
+CompanyName, five Address columns, and PostCode).
 
+``` r
 library(tidyr)
 tidyr::unnest(data, Exports, names_repair = "unique")
 #> New names:
