@@ -67,7 +67,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
     if(request == 59 & elapsed_time < 60){
 
       # Rest for 5 seconds:
-      message(paste0("Reached query limit (60/min). Pausing for ", 60-elapsed_time+5, " seconds."))
+      message(paste0("Reached query limit (60/min). Pausing for ", 60-elapsed_time+5, " seconds..."))
 
       Sys.sleep(60-elapsed_time+5)
 

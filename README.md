@@ -137,11 +137,13 @@ data
 
 Note that HMRC’s API isn’t working entirely as expected at the moment.
 At the moment, loading aggregate data (such as all spirits, HS4 code
-2208) returns an empty dataframe:
+2208) returns an empty dataframe.
 
 ``` r
 library(uktrade)
 data <- load_ots(month = 201901:201912, commodity = 2208, join_lookup = FALSE)
+#> Warning in check_status(response): The API returned an empty dataset (without
+#> error). Are you sure you specified the request correctly?
 
 data
 #> # A tibble: 0 x 0

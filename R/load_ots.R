@@ -39,7 +39,7 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
 
   # If no commodities are chosen, load all (detailed):
 
-  if(is.null(commodity)){ message("Loading detailed export and import data. To load all aggregated trade instead, specify commodity code: `commodity = 0`.") }
+  if(is.null(commodity) & is.null(sitc)){ message("Loading detailed export and import data. To load all aggregated trade instead, specify commodity code: `commodity = 0`.") }
 
   # Check for internet:
   check_internet()
