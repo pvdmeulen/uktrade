@@ -99,7 +99,14 @@ data
 
 ### RTS
 
-RTS code is a work in progress...
+Loading all UK regional trade of 2-digit SITC Division '00 - Live animals other than animals of division 03' for 2019 is done like so:
+
+```{r load_rts example}
+library(uktrade)
+data <- load_rts(month = 201901:201912, sitc = 00, join_lookup = TRUE, output = "tibble")
+
+data
+```
 
 ## Example using trader data
 

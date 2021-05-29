@@ -199,7 +199,7 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
         PortId, PortCodeNumeric, PortCodeAlpha, PortName
       )
 
-    ots_data <- if(output == "df") { dplyr::bind_rows(ots_data) } else if(output == "tibble") { dplyr::as_tibble(dplyr::bind_rows(ots_data)) }
+    ots_data <- if(output == "df") { as.data.frame(ots_data) } else if(output == "tibble") { dplyr::as_tibble(ots_data) }
 
     return(ots_data)
 
