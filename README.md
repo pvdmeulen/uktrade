@@ -47,28 +47,27 @@ This package contains four functions:
 -   `load_custom()`: a function for loading a custom URL (work in
     progress)
 
-All of these functions will output a `dataframe` object with the desired
-data, and are able to keep track of paginated results (in batches of
-30,000 rows) as well as the API request limit of 60 requests per minute.
+All of these functions will output a `dataframe` object (or `tibble`)
+with the desired data, and are able to keep track of paginated results
+(in batches of 30,000 rows) as well as the API request limit of 60
+requests per minute.
 
 The first three are convenient wrapper functions which should make
-loading the majority of data people are after easier (with the
-assumption that further data manipulation will be done in R after
-loading the data). Of course, the API allows for extensive customisation
-in what data is obtained. For this purpose, `load_custom()` allows you
-to specify a custom URL instead. This allows you to be more specific
-right in your request (and in the case of trader data, expand specific
-columns to get more information).
+loading basic datasets easier (with the assumption that further data
+manipulation will be done in R after loading the data). Of course, the
+API allows for extensive customisation in what data is obtained. For
+this purpose, `load_custom()` allows you to specify a custom URL
+instead. This allows you to be more specific in your request (and in the
+case of trader data, expand specific columns to get more information).
 
 ## Example using OTS and RTS data
 
 These functions are convenient wrappers for loading trade data - either
 UK trade data using OTS, or regional UK trade data using RTS. These
-functions will load the raw data and join results with lookups obtained
-from the API (using, for example, the /Commodity and /Country
-endpoints). This makes data easy to read by humans, but also larger
-(more text). Disabling the lookup join is possible by setting
-`join_lookup = FALSE` in these functions.
+functions will load the raw data and optionally join results with
+lookups obtained from the API (using, for example, the /Commodity and
+/Country endpoints). This makes data easy to read by humans, but also
+larger (more columns containing text).
 
 ### OTS
 
@@ -77,9 +76,10 @@ and bottled gin (22085011) for 2019 is done like so:
 
 ``` r
 library(uktrade)
-data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011), join_lookup = FALSE)
+data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011), join_lookup = FALSE, 
+    output = "tibble")
 
-# Results are now in a tibble:
+# Results are now in a tibble (set output to 'df' to obtain a dataframe):
 data
 #> # A tibble: 4,663 x 10
 #>    MonthId FlowTypeId SuppressionIndex CommodityId CommoditySitcId CountryId
@@ -104,6 +104,11 @@ HMRC API also has lookups which can be loaded separately using
 
 ``` r
 library(uktrade)
+
+# Load specific lookups separately:
+commodity_lookup <- load_custom(endpoint = "Commodity")
+
+# Or join automatically with the `join_lookup = TRUE` option:
 data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011), join_lookup = TRUE)
 #> Warning: package 'dplyr' was built under R version 4.0.5
 #> 
@@ -151,7 +156,7 @@ data
 #> # A tibble: 0 x 0
 ```
 
-Specifying `commodity = 0` will load all commodities aggregated
+However, specifying `commodity = 0` will load all commodities aggregated
 (specifying `NULL` will load all detailed commodities and may take
 considerable time):
 
