@@ -103,7 +103,7 @@ Loading all UK regional trade of 2-digit SITC Division '00 - Live animals other 
 
 ```{r load_rts example}
 library(uktrade)
-data <- load_rts(month = 201901:201912, sitc = 00, join_lookup = TRUE, output = "tibble")
+data <- load_rts(month = 201901:201912, sitc = 00, join_lookup = TRUE)
 
 data
 ```

@@ -16,6 +16,8 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr as_tibble
 #' @importFrom magrittr `%>%`
+#' @importFrom stringr str_extract_all
+#' @importFrom stringr str_replace
 #'
 #' @keywords hmrc regional trade statistics api data
 #' @rdname load_rts
@@ -35,7 +37,7 @@ load_rts <- function(month = NULL, flow = c(1, 2, 3, 4), sitc = NULL, country = 
 
   # If no commodities are chosen, load all (detailed):
 
-  if(is.null(commodity)){ message("Loading detailed export and import data. To load all aggregated trade instead, specify commodity code: `sitc = -1`.") }
+  if(is.null(sitc)){ message("Loading all export and import data. To load all aggregated trade instead, specify commodity code: `sitc = -1`.") }
 
   # Check for internet:
   check_internet()
@@ -74,8 +76,8 @@ load_rts <- function(month = NULL, flow = c(1, 2, 3, 4), sitc = NULL, country = 
   # Build filter:
   filter <- paste0("(", mapply(element = args_list, name = names(args_list), FUN = function(element, name)
 
-    # If the filter element for commodity code is NULL:
-    if(is.element(name, "CommodityId") & is.null(element)){
+    # If the filter element for sitc code is NULL:
+    if(is.element(name, "CommoditySitc2Id") & is.null(element)){
 
       # Use all commodity codes greater than or equal to -1 (which is all)
       paste0(name, " ge -1")
@@ -107,6 +109,9 @@ load_rts <- function(month = NULL, flow = c(1, 2, 3, 4), sitc = NULL, country = 
 
     }
 
+    # Rename filter:
+    sitc_filter <- stringr::str_replace(sitc_filter, "CommoditySitc2Id", "CommoditySitcId")
+
     sitc_lookup <- load_custom(endpoint = "SITC", custom_search = sitc_filter, output = output, request = request, timer = timer)
 
     # Remove potential odata column:
@@ -136,7 +141,7 @@ load_rts <- function(month = NULL, flow = c(1, 2, 3, 4), sitc = NULL, country = 
 
     rts_data <- rts_data %>%
       left_join(flow_lookup, by = "FlowTypeId") %>%
-      left_join(sitc_lookup, by = "CommoditySitc2Id") %>%
+      left_join(sitc_lookup, by = c("CommoditySitc2Id" = "CommoditySitcId")) %>%
       left_join(country_region_lookup, by = "CountryId") %>%
       left_join(ukcountry_lookup, by = "GovRegionId") %>%
       # Put data in an order that makes more sense:
@@ -145,7 +150,8 @@ load_rts <- function(month = NULL, flow = c(1, 2, 3, 4), sitc = NULL, country = 
         contains("Sitc1"), contains("Sitc2"),
         contains("GovRegion"),
         contains("Area1"), contains("Area2"), contains("Area3"), contains("Area5a"),
-        CountryId, CountryCodeNumeric, CountryCodeAlpha, CountryName
+        CountryId, CountryCodeNumeric, CountryCodeAlpha, CountryName,
+        Value, NetMass
       )
 
     rts_data <- if(output == "df") { as.data.frame(rts_data) } else if(output == "tibble") { dplyr::as_tibble(rts_data) }

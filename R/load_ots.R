@@ -18,6 +18,7 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr as_tibble
 #' @importFrom magrittr `%>%`
+#' @importFrom stringr str_extract_all
 #'
 #' @keywords hmrc overseas trade statistics api data
 #' @rdname load_ots
@@ -196,7 +197,8 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
         contains("Sitc1"), contains("Sitc2"), contains("Sitc3"), contains("Sitc4"),
         contains("Area1"), contains("Area2"), contains("Area3"), contains("Area5a"),
         CountryId, CountryCodeNumeric, CountryCodeAlpha, CountryName,
-        PortId, PortCodeNumeric, PortCodeAlpha, PortName
+        PortId, PortCodeNumeric, PortCodeAlpha, PortName,
+        Value, NetMass, SuppUnit
       )
 
     ots_data <- if(output == "df") { as.data.frame(ots_data) } else if(output == "tibble") { dplyr::as_tibble(ots_data) }
