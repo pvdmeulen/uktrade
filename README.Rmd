@@ -40,12 +40,12 @@ In the beginning of 2021, the [uktradeinfo.com](https://www.uktradeinfo.com/) we
 
 This package contains four functions:
 
-|Function         |Description                                            |Status                             |
-|-----------------|-------------------------------------------------------|-----------------------------------|
-|`load_ots()`     |a function for loading Overseas Trade Statistics data  |:yellow_circle: *work in progress* |
-|`load_rts()`     |a function for loading Regional Trade Statistics data  |:yellow_circle: *work in progress* |
-|`load_trader()`  |a function for loading trader data                     |:red_circle: *planned*             |
-|`load_custom()`  |a function for loading a custom URL                    |:yellow_circle: *work in progress* |
+|Function         |Description                                            |Status                                         |
+|-----------------|-------------------------------------------------------|-----------------------------------------------|
+|`load_ots()`     |a function for loading Overseas Trade Statistics data  |:yellow_circle: experimental (use at own risk) |
+|`load_rts()`     |a function for loading Regional Trade Statistics data  |:yellow_circle: experimental (use at own risk) |
+|`load_trader()`  |a function for loading trader data                     |:red_circle: *planned*                         |
+|`load_custom()`  |a function for loading a custom URL                    |:yellow_circle: experimental (use at own risk) |
 
 All of these functions will output a `dataframe` object (or `tibble`) with the desired data, and are able to keep track of paginated results (in batches of 30,000 rows) as well as the API request limit of 60 requests per minute.
 

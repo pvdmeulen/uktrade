@@ -39,12 +39,12 @@ tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
 This package contains four functions:
 
-| Function        | Description                                           | Status                              |
-|-----------------|-------------------------------------------------------|-------------------------------------|
-| `load_ots()`    | a function for loading Overseas Trade Statistics data | :yellow\_circle: *work in progress* |
-| `load_rts()`    | a function for loading Regional Trade Statistics data | :yellow\_circle: *work in progress* |
-| `load_trader()` | a function for loading trader data                    | :red\_circle: *planned*             |
-| `load_custom()` | a function for loading a custom URL                   | :yellow\_circle: *work in progress* |
+| Function        | Description                                           | Status                                          |
+|-----------------|-------------------------------------------------------|-------------------------------------------------|
+| `load_ots()`    | a function for loading Overseas Trade Statistics data | :yellow\_circle: experimental (use at own risk) |
+| `load_rts()`    | a function for loading Regional Trade Statistics data | :yellow\_circle: experimental (use at own risk) |
+| `load_trader()` | a function for loading trader data                    | :red\_circle: *planned*                         |
+| `load_custom()` | a function for loading a custom URL                   | :yellow\_circle: experimental (use at own risk) |
 
 All of these functions will output a `dataframe` object (or `tibble`)
 with the desired data, and are able to keep track of paginated results
