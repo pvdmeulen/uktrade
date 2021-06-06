@@ -25,18 +25,19 @@ The goal of `uktrade` is to provide convenient wrapper functions for loading HMR
 
 ## Installation
 
-You can install the latest version of `uktrade` from this GitHub repository using `remotes`:
+You can install the latest version of `uktrade` from this GitHub repository using `devtools` or `remotes`:
 
 ``` r
+devtools::install_github("pvdmeulen/uktrade")
 remotes::install_github("pvdmeulen/uktrade")
 ```
-## HMRC data
+## :office: HMRC data
 
 Her Majesty's Revenue & Customs (HMRC) is the :uk: UK's customs authority. Data on UK trade is available on their [uktradeinfo.com](https://www.uktradeinfo.com/) website, which is collected through a combination of customs declarations and Intrastat surveys (in the case of [some EU trade](https://www.gov.uk/intrastat)).
 
 In the beginning of 2021, the [uktradeinfo.com](https://www.uktradeinfo.com/) website was updated. This update also introduced an Application Programming Interface (API) for accessing bulk trade (and trader) data. For smaller trade data extracts (< 30,000 rows), the [online tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
-## This package
+## :arrow_forward: This package
 
 This package contains four functions:
 
@@ -51,11 +52,11 @@ All of these functions will output a `dataframe` object (or `tibble`) with the d
 
 The first three are convenient wrapper functions which should make loading basic datasets easier (with the assumption that further data manipulation will be done in R after loading the data). Of course, the API allows for extensive customisation in what data is obtained. For this purpose, `load_custom()` allows you to specify a custom URL instead. This allows you to be more specific in your request (and in the case of trader data, expand specific columns to get more information).
 
-## Example using OTS and RTS data
+## :page_facing_up: Example using OTS and RTS data
 
 These functions are convenient wrappers for loading trade data - either UK trade data using OTS, or regional UK trade data using RTS. These functions will load the raw data and optionally join results with lookups obtained from the API (using, for example, the /Commodity and /Country endpoints). This makes data easy to read by humans, but also larger (more columns containing text).
 
-### OTS
+### :uk: OTS
 
 Loading all UK trade of single malt Scotch whisky (CN8 code 22083030) and bottled gin (22085011) for 2019 is done like so:
 
@@ -81,25 +82,25 @@ data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011), join_
 data
 ```
 
-Note that HMRC's API isn't working entirely as expected at the moment. At the moment, loading aggregate data (such as all spirits, HS4 code 2208) returns an empty dataframe.
+Loading aggregate data (such as all spirits, HS4 code 2208) is possible too (in the background, this is loading commodity codes larger than or equal to 22080000, and less than or equal to 22089999):
 
 ```{r load_ots example with join and HS4}
 library(uktrade)
-data <- load_ots(month = 201901:201912, commodity = 2208, join_lookup = FALSE)
+data <- load_ots(month = 201901:201912, commodity = 2208, join_lookup = TRUE)
 
 data
 ```
 
-However, specifying `commodity = 0` will load all commodities aggregated (specifying `NULL` will load all detailed commodities and may take considerable time):
+Similarly, specifying `commodity = 0` or `commodity = NULL` will load all commodities (this may take considerable time):
 
 ```{r load_ots example with join and commodity0}
 library(uktrade)
-data <- load_ots(month = 201901, commodity = 0, join_lookup = FALSE)
+data <- load_ots(month = 201901, commodity = 0, join_lookup = TRUE)
 
 data
 ```
 
-### RTS
+### :ferris_wheel: RTS
 
 Loading all UK regional trade of 2-digit SITC Division '00 - Live animals other than animals of division 03' for 2019 is done by specifying `sitc = 00` (which means leading zeros are removed):
 
@@ -110,11 +111,11 @@ data <- load_rts(month = 201901:201912, sitc = 00, join_lookup = TRUE)
 data
 ```
 
-## Example using trader data
+## :woman: Example using trader data
 
 Trader code is a work in progress...
 
-## Example using a custom URL
+## :link: Example using a custom URL
 
 This example uses the `load_custom()` function to replicate the example given in the [API documentation](https://www.uktradeinfo.com/api-documentation/) for finding all traders that exported ‘Live horses (excl. pure-bred for breeding)’ from the ‘CB8’ post code in 2019. This way of loading data is possible, but will require more data manipulation after obtaining the results. This function is also the workhorse (no pun intended) behind the other functions.
 
@@ -133,6 +134,6 @@ library(tidyr)
 tidyr::unnest(data, Exports, names_repair = "unique")
 ```
 
-## MIT License
+## :copyright: MIT License
 
 You're free to use this code and its associated documentation without restriction. This includes both personal and commercial use. However, there is no warranty provided or any liability on my part. See the LICENSE file for more information.

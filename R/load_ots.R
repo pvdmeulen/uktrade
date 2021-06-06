@@ -38,8 +38,10 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
                      port = NULL, suppression = NULL, join_lookup = TRUE, output = "tibble"){
 
   # If no commodities are chosen, load all (detailed):
+  if(any(is.null(commodity)) | any(is.element(commodity, 0)) & any(is.null(sitc))){ message("Loading detailed export and import data for all goods. This may take a while.") }
 
-  if(is.null(commodity) & is.null(sitc)){ message("Loading detailed export and import data. To load all aggregated trade instead, specify commodity code: `commodity = 0`.") }
+  # Check commodity selection:
+  if(length(commodity) > 1 & any(is.element(commodity, 0))) stop("Select either a collection of HS2, HS4, HS6, or CN8 commodity codes, or `0` or `NULL` for all goods (not both).")
 
   # Check for internet:
   check_internet()
@@ -69,20 +71,38 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
   # Build filter:
   filter <- paste0("(", mapply(element = args_list, name = names(args_list), FUN = function(element, name)
 
-    # If the filter element is a commodity code
-    if(is.element(name, "CommodityId") & is.null(element)){
+    paste0(sapply(element, function(element)
 
-      # Use all commodity codes greater than or equal to 0 (which is all)
-      paste0(name, " ge 0")
+      # For HS2, HS4, or HS6 codes without leading zeros:
+      if(is.element(name, "CommodityId") & is.element(stringr::str_length(element), c(2, 4, 6)) & element != 0){
+
+        paste0("(", name, " ge ", stringr::str_pad(element, pad = 0, side = "right", width = 8), " and ",
+               name, " le ", stringr::str_pad(element, pad = 9, side = "right", width = 8),
+               collapse = " or ", ")")
+
+        # For HS2, HS4, or HS6 codes with leading zeros:
+      } else if(is.element(name, "CommodityId") & is.element(stringr::str_length(element), c(1, 3, 5)) & element != 0){
+
+        paste0("(", name, " ge ", stringr::str_pad(element, pad = 0, side = "right", width = 7), " and ",
+               name, " le ", stringr::str_pad(element, pad = 9, side = "right", width = 7),
+               collapse = " or ", ")")
+
+      } else if(is.element(name, "CommodityId") & is.null(element) | element == 0){
+
+        # Use all commodity codes greater than or equal to 0 (which is all)
+        paste0(name, " ge 0")
 
       } else {
 
-        # if not, use "FilterName1 eq FilterElement11 or FilterName1 eq FilterElement12" etc.
-        paste0(name, " eq ", element, collapse = " or ")
+        paste0(name, " eq ", element)
 
       }
 
-  ), ")", collapse = " and ")
+    ), collapse = " or ") # end of sapply
+
+  ), # end of mapply
+
+  ")", collapse = " and ")
 
   # OTS data --------------------------------------------------------------------------------------
 
