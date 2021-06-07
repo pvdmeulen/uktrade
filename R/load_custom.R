@@ -29,7 +29,7 @@
 #' nrow(data)
 #' }
 
-load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, custom_search = "", request = 0, skip_interval = 30000, timer = NULL, output = "tibble"){
+load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, custom_search = "", request = 1, skip_interval = 30000, timer = NULL, output = "tibble", debug = FALSE){
 
   check_internet()
 
@@ -40,16 +40,20 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
   skip <- 0
   page <- 1
 
+  # Create timer reference point:
+  timer <- if(is.null(timer)){ proc.time() } else { timer }
+
+  # While not all results are loaded:
   while(done == FALSE){
+
+    # Debug message:
+    if(debug == TRUE){print(paste0("Loading dataset ", request, " with an elapsed time of ", round(proc.time()[[3]] - timer[[3]], digits = 3), " seconds"))}
 
     # Construct skip suffix:
     skip_suffix <- if(skip == 0) { NULL } else { paste0("&$skip=", skip) }
 
     # Construct URL:
     url <- paste0(base_url, "/", endpoint, custom_search, skip_suffix)
-
-    # Start timer:
-    timer <- if(is.null(timer)){ proc.time() } else { timer }
 
     # Get API response:
     response <- httr::GET(URLencode(url))
@@ -64,12 +68,14 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
     elapsed_time <- proc.time()[[3]] - timer[[3]]
 
     # Check if we've reached API limit (60/min):
-    if(request == 59 & elapsed_time < 60){
+    if(request %% 59 == 0 & request/elapsed_time > 58/60){
 
       # Rest for 5 seconds:
-      message(paste0("Reached query limit (60/min). Pausing for ", 60-elapsed_time+5, " seconds..."))
+      message(paste0("Nearly reached query limit (60/min). Pausing for ", 30, " seconds..."))
 
-      Sys.sleep(60-elapsed_time+5)
+      Sys.sleep(30)
+
+      message(paste0("Resuming download..."))
 
     }
 
@@ -89,6 +95,9 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
     }
 
   } # End of while done == FALSE
+
+  # Reset timer? Is this needed...?
+  timer <- proc.time()
 
   # Return data:
 

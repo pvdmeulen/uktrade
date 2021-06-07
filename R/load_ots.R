@@ -38,7 +38,7 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
                      port = NULL, suppression = NULL, join_lookup = TRUE, output = "tibble"){
 
   # If no commodities are chosen, load all (detailed):
-  if(any(is.null(commodity)) | any(is.element(commodity, 0)) & any(is.null(sitc))){ message("Loading detailed export and import data for all goods. This may take a while.") }
+  if(any(is.null(commodity)) | any(is.element(commodity, 0))){ message("Loading detailed export and import data for all goods. This may take a while.") }
 
   # Check commodity selection:
   if(length(commodity) > 1 & any(is.element(commodity, 0))) stop("Select either a collection of HS2, HS4, HS6, or CN8 commodity codes, or `0` or `NULL` for all goods (not both).")
@@ -47,7 +47,7 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
   check_internet()
 
   # Custom # of requests and time taken:
-  request <- 0
+  request <- 1
   timer <- proc.time()
 
   # Country and region lookup ---------------------------------------------------------------------
@@ -89,8 +89,8 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
 
       } else if(is.element(name, "CommodityId") & is.null(element) | element == 0){
 
-        # Use all commodity codes greater than or equal to 0 (which is all)
-        paste0(name, " ge 0")
+        # Use all commodity codes less than or equal to 99999999 (which is all)
+        paste0(name, " le 99999999")
 
       } else {
 

@@ -8,10 +8,11 @@ load_custom(
   base_url = "https://api.uktradeinfo.com",
   endpoint,
   custom_search = "",
-  request = 0,
+  request = 1,
   skip_interval = 30000,
   timer = NULL,
-  output = "tibble"
+  output = "tibble",
+  debug = FALSE
 )
 }
 \arguments{
