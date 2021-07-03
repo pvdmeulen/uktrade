@@ -18,7 +18,7 @@ load_ots(
 )
 }
 \arguments{
-\item{month}{The month(s) to be loaded in the form of one or more integers of the format YYYYMM. Defaults to NULL (all months).}
+\item{month}{The month(s) to be loaded in the form of a vector of two integers (YYYYMM), where the first element is the minimum date, and second the maximum date. Defaults to NULL (all months).}
 
 \item{flow}{The trade flow to be loaded. Takes one ore more integers (1, 2, 3, and/or 4), where 1 is EU imports, 2 is EU exports, 3 is non-EU imports, and 4 is non-EU exports. Defaults to NULL (all flows).}
 
@@ -46,8 +46,11 @@ A function for loading OTS data via HMRC's API.
 }
 \examples{
 \dontrun{
-# Obtaining all trade of single malt Scotch whisky and bottled gin between in 2019 via the OTS endpoint:
-data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011))
+# Obtaining all trade of single malt Scotch whisky and bottled gin between in
+# 2019 via the OTS endpoint:
+
+load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011))
+
 }
 }
 \keyword{api}

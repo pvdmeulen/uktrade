@@ -10,6 +10,7 @@
 #' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param request A non-negative integer value to keep track of the starting number of requests made. Defaults to zero. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
 #' @param timer A non-negative integer value (seconds) to keep track of the time taken so far. Defaults to NULL. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
+#' @param debug A logical. Defaults to FALSE. Setting this to TRUE will print the number of datasets as they are being loaded as well as the elapsed time.
 #'
 #' @importFrom httr GET
 #' @importFrom dplyr bind_rows
@@ -22,14 +23,31 @@
 #' @return Returns a dataframe or tibble containing the API response
 #' @examples
 #' \dontrun{
-#' # Obtaining all exports of single malt Scotch whisky and bottled gin between January 2000 and December 2020 via the OTS endpoint:
-#' data <- load_custom(endpoint = "OTS", custom_search = "?$filter= (FlowTypeId eq 2 or FlowTypeId eq 4) and (CommodityId eq 22083030 or CommodityId eq 22085011) and (MonthId ge 201001 and MonthId le 202012)")
+#' # Obtaining all exports of single malt Scotch whisky and bottled gin between
+#' January 2000 and December 2020 via the OTS endpoint:
+#'
+#' custom_search <- paste0(
+#'   "?$filter= (FlowTypeId eq 2 or FlowTypeId eq 4)",
+#'   " and (CommodityId eq 22083030 or CommodityId eq 22085011)",
+#'   " and (MonthId ge 201001 and MonthId le 202012)"
+#'   )
+#'
+#' data <- load_custom(endpoint = "OTS", custom_search = custom_search)
 #'
 #' # Note that there are more than 30,000 rows returned:
+#'
 #' nrow(data)
+#'
 #' }
 
-load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, custom_search = "", request = 1, skip_interval = 30000, timer = NULL, output = "tibble", debug = FALSE){
+load_custom <- function(base_url = "https://api.uktradeinfo.com",
+                        endpoint,
+                        custom_search = "",
+                        request = 1,
+                        skip_interval = 30000,
+                        timer = NULL,
+                        output = "tibble",
+                        debug = FALSE){
 
   check_internet()
 
@@ -47,7 +65,11 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
   while(done == FALSE){
 
     # Debug message:
-    if(debug == TRUE){print(paste0("Loading dataset ", request, " with an elapsed time of ", round(proc.time()[[3]] - timer[[3]], digits = 3), " seconds"))}
+    if(debug == TRUE){print(paste0("Loading dataset ", request,
+                                   " with an elapsed time of ",
+                                   round(
+                                     proc.time()[[3]] - timer[[3]], digits = 3
+                                     ), " seconds"))}
 
     # Construct skip suffix:
     skip_suffix <- if(skip == 0) { NULL } else { paste0("&$skip=", skip) }
@@ -56,7 +78,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
     url <- paste0(base_url, "/", endpoint, custom_search, skip_suffix)
 
     # Get API response:
-    response <- httr::GET(URLencode(url))
+    response <- httr::GET(utils::URLencode(url))
 
     # Check status:
     check_status(response)
@@ -71,7 +93,8 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
     if(request %% 59 == 0 & request/elapsed_time > 58/60){
 
       # Rest for 5 seconds:
-      message(paste0("Nearly reached query limit (60/min). Pausing for ", 30, " seconds..."))
+      message(paste0("Nearly reached query limit (60/min). Pausing for ", 30,
+                     " seconds..."))
 
       Sys.sleep(30)
 
@@ -101,7 +124,15 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com", endpoint, cust
 
   # Return data:
 
-  data <- if(output == "df") { dplyr::bind_rows(data) } else if(output == "tibble") { dplyr::as_tibble(dplyr::bind_rows(data)) }
+  data <- if(output == "df") {
+
+    dplyr::bind_rows(data)
+
+  } else if(output == "tibble") {
+
+    dplyr::as_tibble(dplyr::bind_rows(data))
+
+    }
 
   return(data)
 

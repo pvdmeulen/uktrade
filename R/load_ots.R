@@ -3,7 +3,7 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #' A function for loading OTS data via HMRC's API.
-#' @param month The month(s) to be loaded in the form of one or more integers of the format YYYYMM. Defaults to NULL (all months).
+#' @param month The month(s) to be loaded in the form of a vector of two integers (YYYYMM), where the first element is the minimum date, and second the maximum date. Defaults to NULL (all months).
 #' @param flow The trade flow to be loaded. Takes one ore more integers (1, 2, 3, and/or 4), where 1 is EU imports, 2 is EU exports, 3 is non-EU imports, and 4 is non-EU exports. Defaults to NULL (all flows).
 #' @param commodity One or more HS2, HS4, HS6, or CN8 commodity codes in the form of a numeric vector. Defaults to NULL (all commodities).
 #' @param sitc One or more SITC1, SITC2, SITC4, or SITC5 commodity codes in the form of a numeric vector. Defaults to NULL (all commodities).
@@ -20,6 +20,7 @@
 #' @importFrom dplyr as_tibble
 #' @importFrom magrittr `%>%`
 #' @importFrom stringr str_extract_all
+#' @importFrom rlang .data
 #'
 #' @keywords hmrc overseas trade statistics api data
 #' @rdname load_ots
@@ -28,20 +29,32 @@
 #' @return Returns a dataframe or tibble
 #' @examples
 #' \dontrun{
-#' # Obtaining all trade of single malt Scotch whisky and bottled gin between in 2019 via the OTS endpoint:
-#' data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011))
+#' # Obtaining all trade of single malt Scotch whisky and bottled gin between in
+#' # 2019 via the OTS endpoint:
+#'
+#' load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011))
+#'
 #' }
 
 # Function:
 
-load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc = NULL, country = NULL, region = NULL,
-                     port = NULL, suppression = NULL, join_lookup = TRUE, output = "tibble"){
+load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL,
+                     sitc = NULL, country = NULL, region = NULL,
+                     port = NULL, suppression = NULL, join_lookup = TRUE,
+                     output = "tibble"){
 
   # If no commodities are chosen, load all (detailed):
-  if(any(is.null(commodity)) | any(is.element(commodity, 0))){ message("Loading detailed export and import data for all goods. This may take a while.") }
+  if(any(is.null(commodity)) | any(is.element(commodity, 0))){
+    message(
+      "Loading detailed trade data for all commodities. This may take a while."
+      )
+    }
 
   # Check commodity selection:
-  if(length(commodity) > 1 & any(is.element(commodity, 0))) stop("Select either a collection of HS2, HS4, HS6, or CN8 commodity codes, or `0` or `NULL` for all goods (not both).")
+  if(length(commodity) > 1 & any(is.element(commodity, 0))){
+    stop(
+      "Select a collection of commodities or `NULL` for all goods (not both).")
+  }
 
   # Check for internet:
   check_internet()
@@ -50,70 +63,74 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
   request <- 1
   timer <- proc.time()
 
-  # Country and region lookup ---------------------------------------------------------------------
+  # Country and region lookup --------------------------------------------------
 
-  # Needs to be loaded upfront since function argument is specified in ISO codes:
+  # Needs to be loaded upfront since argument is specified in ISO codes:
 
-  country_region_lookup <- load_custom(endpoint = "Country", output = output, request = request, timer = timer)
+  country_region_lookup <- load_custom(endpoint = "Country", output = output,
+                                       request = request, timer = timer)
 
-  chosen_country_id <- if(is.null(country)){ NULL } else { unique(c(country_region_lookup[is.element(country_region_lookup$CountryCodeAlpha, country), "CountryId"])) }
-  chosen_region_id <- if(is.null(region)){ NULL } else { unique(c(country_region_lookup[is.element(country_region_lookup$Area1a, region), "RegionId"])) }
+  chosen_country_id <- if(is.null(country)){
 
-  # Build filter ----------------------------------------------------------------------------------
+    NULL
+
+    } else {
+
+      unique(c(country_region_lookup[is.element(
+        country_region_lookup$CountryCodeAlpha, country),
+        "CountryId"]))
+
+      }
+
+  chosen_region_id <- if(is.null(region)){
+
+    NULL
+
+  } else {
+
+    unique(c(country_region_lookup[is.element(
+      country_region_lookup$Area1a, region
+      ), "RegionId"]))
+
+    }
+
+  # Build filter ---------------------------------------------------------------
 
   # Put filter arguments in a list:
-  args_list <- list(FlowTypeId = flow, MonthId = month, CommodityId = commodity, CommoditySitcId = sitc,
-                    RegionId = chosen_region_id, CountryId = chosen_country_id, PortId = port, SuppressionIndex = suppression)
+  args_list <- list(FlowTypeId = flow, MonthId = month, CommodityId = commodity,
+                    CommoditySitcId = sitc, RegionId = chosen_region_id,
+                    CountryId = chosen_country_id, PortId = port,
+                    SuppressionIndex = suppression)
 
   # Take out NULL arguments from filter:
   args_list[sapply(args_list, is.null)] <- NULL
 
   # Build filter:
-  filter <- paste0("(", mapply(element = args_list, name = names(args_list), FUN = function(element, name)
+  filter <- list()
 
-    paste0(sapply(element, function(element)
+  for(name in names(args_list)){
 
-      # For HS2, HS4, or HS6 codes without leading zeros:
-      if(is.element(name, "CommodityId") & is.element(stringr::str_length(element), c(2, 4, 6)) & element != 0){
+    filter[paste0(name)] <- args_list[paste0(name)]
 
-        paste0("(", name, " ge ", stringr::str_pad(element, pad = 0, side = "right", width = 8), " and ",
-               name, " le ", stringr::str_pad(element, pad = 9, side = "right", width = 8),
-               collapse = " or ", ")")
+    filter[paste0(name)] <- create_filter(filter[paste0(name)])
 
-        # For HS2, HS4, or HS6 codes with leading zeros:
-      } else if(is.element(name, "CommodityId") & is.element(stringr::str_length(element), c(1, 3, 5)) & element != 0){
+  }
 
-        paste0("(", name, " ge ", stringr::str_pad(element, pad = 0, side = "right", width = 7), " and ",
-               name, " le ", stringr::str_pad(element, pad = 9, side = "right", width = 7),
-               collapse = " or ", ")")
+  filter <- paste0(filter, collapse = " and ")
 
-      } else if(is.element(name, "CommodityId") & is.null(element) | element == 0){
-
-        # Use all commodity codes less than or equal to 99999999 (which is all)
-        paste0(name, " le 99999999")
-
-      } else {
-
-        paste0(name, " eq ", element)
-
-      }
-
-    ), collapse = " or ") # end of sapply
-
-  ), # end of mapply
-
-  ")", collapse = " and ")
-
-  # OTS data --------------------------------------------------------------------------------------
+  # OTS data -------------------------------------------------------------------
 
   # Load OTS data:
-  ots_data <- load_custom(endpoint = "OTS", custom_search = paste0("?$filter=", filter), output = output, request = request, timer = timer)
+  ots_data <- load_custom(endpoint = "OTS", custom_search = paste0("?$filter=",
+                                                                   filter),
+                          output = output, request = request, timer = timer)
 
   if(join_lookup == FALSE) { return(ots_data) } else {
 
-    # Commodity lookup ----------------------------------------------------------------------------
+    # Commodity lookup ---------------------------------------------------------
 
-    # Extract from the filter only those items with (CommodityId ... ) or (CommoditySitcId ... ):
+    # Extract from the filter only those items with (CommodityId ... ) or
+    # (CommoditySitcId ... ):
 
     # How many items are in the filter?
 
@@ -124,103 +141,154 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL, sitc 
 
     commodity_filter <- if(length(commodity_filter) == 0){""} else{
 
-      paste0("?$filter=", paste0(stringr::str_extract_all(filter, "\\(CommodityId[^()]+\\)")[[1]], collapse = " and "))
+      paste0("?$filter=", paste0(stringr::str_extract_all(
+        filter,"\\(CommodityId[^()]+\\)")[[1]], collapse = " or ")
+        )
 
     }
 
     # Load data:
-    commodity_lookup <- load_custom(endpoint = "Commodity", custom_search = commodity_filter, output = output, request = request, timer = timer)
+    commodity_lookup <- load_custom(endpoint = "Commodity",
+                                    custom_search = commodity_filter,
+                                    output = output,
+                                    request = request,
+                                    timer = timer)
 
     # Remove potential odata column:
 
     commodity_lookup$`@odata.type` <- NULL
 
-    # SITC lookup ---------------------------------------------------------------------------------
+    # SITC lookup --------------------------------------------------------------
 
     sitc_filter <- args_list["CommoditySitcId"]
     sitc_filter[sapply(sitc_filter, is.null)] <- NULL
 
     sitc_filter <- if(length(sitc_filter) == 0) {""} else {
 
-      paste0("?$filter=", paste0(stringr::str_extract_all(filter, "\\(CommoditySitcId[^()]+\\)")[[1]], collapse = " and "))
+      paste0("?$filter=", paste0(stringr::str_extract_all(
+        filter, "\\(CommoditySitcId[^()]+\\)")[[1]], collapse = " or "))
 
     }
 
-    sitc_lookup <- load_custom(endpoint = "SITC", custom_search = sitc_filter, output = output, request = request, timer = timer)
+    sitc_lookup <- load_custom(endpoint = "SITC",
+                               custom_search = sitc_filter,
+                               output = output,
+                               request = request,
+                               timer = timer)
 
     # Remove potential odata column:
 
     sitc_lookup$`@odata.type` <- NULL
 
-    # Flow lookup ---------------------------------------------------------------------------------
+    # Flow lookup --------------------------------------------------------------
 
     flow_filter <- args_list["FlowTypeId"]
     flow_filter[sapply(flow_filter, is.null)] <- NULL
 
     flow_filter <- if(length(flow_filter) == 0) {""} else {
 
-      paste0("?$filter=", paste0(stringr::str_extract_all(filter, "\\(FlowTypeId[^()]+\\)")[[1]], collapse = " and "))
+      paste0("?$filter=", paste0(stringr::str_extract_all(
+        filter, "\\(FlowTypeId[^()]+\\)"
+        )[[1]], collapse = " and "))
 
     }
 
-    flow_lookup <- load_custom(endpoint = "FlowType", custom_search = flow_filter, output = output, request = request, timer = timer)
+    flow_lookup <- load_custom(endpoint = "FlowType",
+                               custom_search = flow_filter,
+                               output = output,
+                               request = request,
+                               timer = timer)
 
     # Remove potential odata column:
 
     flow_lookup$`@odata.type` <- NULL
 
-    # Port lookup ---------------------------------------------------------------------------------
+    # Port lookup --------------------------------------------------------------
 
     port_filter <- args_list["PortId"]
     port_filter[sapply(port_filter, is.null)] <- NULL
 
     port_filter <- if(length(port_filter) == 0) {""} else {
 
-      paste0("?$filter=", paste0(stringr::str_extract_all(filter, "\\(PortId[^()]+\\)")[[1]], collapse = " and "))
+      paste0("?$filter=", paste0(stringr::str_extract_all(
+        filter, "\\(PortId[^()]+\\)"
+        )[[1]], collapse = " and "))
 
     }
 
-    port_lookup <- load_custom(endpoint = "Port", custom_search = port_filter, output = output, request = request, timer = timer)
+    port_lookup <- load_custom(endpoint = "Port",
+                               custom_search = port_filter,
+                               output = output,
+                               request = request,
+                               timer = timer)
 
     # Remove potential odata column:
 
     port_lookup$`@odata.type` <- NULL
 
-    # Suppression lookup --------------------------------------------------------------------------
+    # Suppression lookup -------------------------------------------------------
 
     supp_lookup <- data.frame(
       "SuppressionIndex" = c(1, 2, 3, 4, 5),
       "SuppressionDesc" = c(
         "Complete suppression, where no information is published.",
-        "Suppression of countries and ports, where only the overall total value (£ sterling) and quantity (kg) are published.",
+        "Suppression of countries and ports, where only the overall total value (GBP) and quantity (kg) are published.",
         "Suppression of countries, ports and total trade quantity, where only the overall total value is published.",
         "Suppression of quantity for countries and ports, where the overall total value and quantity are published, but where a country and port breakdown is only available for value.",
         "Suppression of quantity for countries, ports and total trade, where no information on quantity is published, but a full breakdown of value is available."
       )
     )
 
-    # Join ----------------------------------------------------------------------------------------
+    # Join ---------------------------------------------------------------------
 
     ots_data <- ots_data %>%
-      left_join(flow_lookup, by = "FlowTypeId") %>%
-      left_join(commodity_lookup, by = "CommodityId") %>%
-      left_join(sitc_lookup, by = "CommoditySitcId") %>%
-      left_join(country_region_lookup, by = "CountryId") %>%
-      left_join(port_lookup, by = "PortId") %>%
-      left_join(supp_lookup, by = "SuppressionIndex") %>%
+      dplyr::left_join(flow_lookup, by = "FlowTypeId") %>%
+      dplyr::left_join(commodity_lookup, by = "CommodityId") %>%
+      dplyr::left_join(sitc_lookup, by = "CommoditySitcId") %>%
+      dplyr::left_join(country_region_lookup, by = "CountryId") %>%
+      dplyr::left_join(port_lookup, by = "PortId") %>%
+      dplyr::left_join(supp_lookup, by = "SuppressionIndex") %>%
       # Put data in an order that makes more sense:
-      select(
-        MonthId, FlowTypeId, FlowTypeDescription,
-        SuppressionIndex, SuppressionDesc,
-        contains("Hs2"), contains("Hs4"), contains("Hs6"), contains("Cn8"),
-        contains("Sitc1"), contains("Sitc2"), contains("Sitc3"), contains("Sitc4"),
-        contains("Area1"), contains("Area2"), contains("Area3"), contains("Area5a"),
-        CountryId, CountryCodeNumeric, CountryCodeAlpha, CountryName,
-        PortId, PortCodeNumeric, PortCodeAlpha, PortName,
-        Value, NetMass, SuppUnit
+      dplyr::select(
+        .data$MonthId,
+        .data$FlowTypeId,
+        .data$FlowTypeDescription,
+        .data$SuppressionIndex,
+        .data$SuppressionDesc,
+        dplyr::contains("Hs2"),
+        dplyr::contains("Hs4"),
+        dplyr::contains("Hs6"),
+        dplyr::contains("Cn8"),
+        dplyr::contains("Sitc1"),
+        dplyr::contains("Sitc2"),
+        dplyr::contains("Sitc3"),
+        dplyr::contains("Sitc4"),
+        dplyr::contains("Area1"),
+        dplyr::contains("Area2"),
+        dplyr::contains("Area3"),
+        dplyr::contains("Area5a"),
+        .data$CountryId,
+        .data$CountryCodeNumeric,
+        .data$CountryCodeAlpha,
+        .data$CountryName,
+        .data$PortId,
+        .data$PortCodeNumeric,
+        .data$PortCodeAlpha,
+        .data$PortName,
+        .data$Value,
+        .data$NetMass,
+        .data$SuppUnit
       )
 
-    ots_data <- if(output == "df") { as.data.frame(ots_data) } else if(output == "tibble") { dplyr::as_tibble(ots_data) }
+    ots_data <- if(output == "df") {
+
+      as.data.frame(ots_data)
+
+    } else if(output == "tibble") {
+
+      dplyr::as_tibble(ots_data)
+
+      }
 
     return(ots_data)
 

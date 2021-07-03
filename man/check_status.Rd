@@ -6,6 +6,9 @@
 \usage{
 check_status(res)
 }
+\arguments{
+\item{res}{The API response obtained from https://api.uktradeinfo.com.}
+}
 \description{
 A function to check the API's response. Used within `load_*()` functions.
 }

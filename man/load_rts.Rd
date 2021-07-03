@@ -16,11 +16,11 @@ load_rts(
 )
 }
 \arguments{
-\item{month}{The month(s) to be loaded in the form of one or more integers of the format YYYYMM. Defaults to NULL (all months).}
+\item{month}{The month(s) to be loaded in the form of a vector of two integers (YYYYMM), where the first element is the minimum date, and second the maximum date. Defaults to NULL (all months).}
 
 \item{flow}{The trade flow to be loaded. Takes one ore more integers (1, 2, 3, and/or 4), where 1 is EU imports, 2 is EU exports, 3 is non-EU imports, and 4 is non-EU exports. Defaults to NULL (all flows).}
 
-\item{sitc}{One or more SITC2 commodity codes in the form of a numeric vector. Defaults to NULL (all commodities).}
+\item{sitc}{The range of SITC2 commodity codes to be loaded (min and max), in the form of a numeric vector. Defaults to NULL (all commodities).}
 
 \item{country}{One or more destination or origin countries by their 2-letter ISO code. Defaults to NULL (all countries).}
 
@@ -40,8 +40,11 @@ A function for loading RTS data via HMRC's API.
 }
 \examples{
 \dontrun{
-# Obtaining all trade of SITC2 code 00 - Live animals in 2019 via the RTS endpoint:
-data <- load_rts(month = 201901:201912, sitc = 00)
+# Obtaining all trade from SITC2 code 00 - Live animals to
+# 11 - Beverages in 2019 via the RTS endpoint:
+
+load_rts(month = c(201901, 201912), sitc = c(00, 11))
+
 }
 }
 \keyword{api}

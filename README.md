@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![R-CMD-check](https://github.com/pvdmeulen/uktrade/workflows/R-CMD-check/badge.svg)](https://github.com/pvdmeulen/uktrade/actions)
 <!-- badges: end -->
 
 The goal of `uktrade` is to provide convenient wrapper functions for
@@ -14,14 +15,13 @@ loading HMRC data in R.
 ## Installation
 
 You can install the latest version of `uktrade` from this GitHub
-repository using `devtools` or `remotes`:
+repository using `devtools`:
 
 ``` r
 devtools::install_github("pvdmeulen/uktrade")
-remotes::install_github("pvdmeulen/uktrade")
 ```
 
-## :office: HMRC data
+## HMRC data
 
 Her Majesty’s Revenue & Customs (HMRC) is the :uk: UK’s customs
 authority. Data on UK trade is available on their
@@ -36,7 +36,7 @@ for accessing bulk trade (and trader) data. For smaller trade data
 extracts (&lt; 30,000 rows), the [online
 tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
-## :arrow\_forward: This package
+## This package
 
 This package contains four functions:
 
@@ -60,7 +60,7 @@ this purpose, `load_custom()` allows you to specify a custom URL
 instead. This allows you to be more specific in your request (and in the
 case of trader data, expand specific columns to get more information).
 
-## :page\_facing\_up: Example using OTS and RTS data
+## Example using OTS and RTS data
 
 These functions are convenient wrappers for loading trade data - either
 UK trade data using OTS, or regional UK trade data using RTS. These
@@ -69,14 +69,14 @@ lookups obtained from the API (using, for example, the /Commodity and
 /Country endpoints). This makes data easy to read by humans, but also
 larger (more columns containing text).
 
-### :uk: OTS
+### OTS
 
 Loading all UK trade of single malt Scotch whisky (CN8 code 22083030)
 and bottled gin (22085011) for 2019 is done like so:
 
 ``` r
 library(uktrade)
-data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011), join_lookup = FALSE, 
+data <- load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011), join_lookup = FALSE,
     output = "tibble")
 
 # Results are now in a tibble (set output to 'df' to obtain a dataframe):
@@ -98,6 +98,9 @@ data
 #> #   NetMass <dbl>, SuppUnit <dbl>
 ```
 
+Note that the month argument specifies a range in the form of
+`c(min, max)`, not two months.
+
 As you can see, results are not easily interpretable as they stand. The
 HMRC API also has lookups which can be loaded separately using
 `load_custom()`, or joined automatically:
@@ -107,7 +110,7 @@ HMRC API also has lookups which can be loaded separately using
 commodity_lookup <- load_custom(endpoint = "Commodity")
 
 # Or join automatically with the `join_lookup = TRUE` option:
-data <- load_ots(month = 201901:201912, commodity = c(22083030, 22085011), join_lookup = TRUE)
+data <- load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011), join_lookup = TRUE)
 
 data
 #> # A tibble: 4,663 x 39
@@ -139,7 +142,7 @@ too (in the background, this is loading commodity codes larger than or
 equal to 22080000, and less than or equal to 22089999):
 
 ``` r
-data <- load_ots(month = 201901:201912, commodity = 2208, join_lookup = TRUE)
+data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE)
 
 data
 #> # A tibble: 23,466 x 39
@@ -166,13 +169,13 @@ data
 #> #   Value <dbl>, NetMass <dbl>, SuppUnit <dbl>
 ```
 
-Similarly, specifying `commodity = 0` or `commodity = NULL` will load
-all commodities (this may take considerable time). For example, we can
-load all exports to Australia in January 2019:
+Similarly, specifying `commodity = NULL` will load all commodities (this
+may take considerable time). For example, we can load all exports to
+Australia in January 2019:
 
 ``` r
 data <- load_ots(month = 201901, country = "AU", flow = 4, commodity = NULL, join_lookup = TRUE)
-#> Loading detailed export and import data for all goods. This may take a while.
+#> Loading detailed trade data for all commodities. This may take a while.
 
 data
 #> # A tibble: 4,960 x 39
@@ -201,17 +204,19 @@ data
 
 Loading OTS data by their SITC classification is a work in progress…
 
-### :ferris\_wheel: RTS
+### RTS
 
-Loading all UK regional trade of 2-digit SITC Division ‘00 - Live
-animals other than animals of division 03’ for 2019 is done by
-specifying `sitc = 00` (which means leading zeros are removed):
+Loading all UK regional trade of 2-digit SITC Divisions ‘00 - Live
+animals other than animals of division 03’ to ‘11 - Beverages’ for 2019
+is done by specifying `sitc = c(00, 11)` (leading zeros are removed).
+This again specifies a range (like with months) to avoid URLs being too
+long.
 
 ``` r
-data <- load_rts(month = 201901:201912, sitc = 0, join_lookup = TRUE)
+data <- load_rts(month = c(201901, 201912), sitc = c(0, 11), join_lookup = TRUE)
 
 data
-#> # A tibble: 2,043 x 26
+#> # A tibble: 64,377 x 26
 #>    MonthId FlowTypeId FlowTypeDescription  Sitc1Code Sitc1Desc  CommoditySitc2Id
 #>      <int>      <int> <chr>                <chr>     <chr>                 <int>
 #>  1  201901          3 "Non-EU Imports    ~ 0         Food & li~                0
@@ -224,7 +229,7 @@ data
 #>  8  201910          3 "Non-EU Imports    ~ 0         Food & li~                0
 #>  9  201901          3 "Non-EU Imports    ~ 0         Food & li~                0
 #> 10  201904          3 "Non-EU Imports    ~ 0         Food & li~                0
-#> # ... with 2,033 more rows, and 20 more variables: Sitc2Code <chr>,
+#> # ... with 64,367 more rows, and 20 more variables: Sitc2Code <chr>,
 #> #   Sitc2Desc <chr>, GovRegionId <int>, GovRegionCodeNumeric <chr>,
 #> #   GovRegionGroupCodeAlpha <chr>, GovRegionName <chr>,
 #> #   GovRegionGroupName <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
@@ -233,11 +238,11 @@ data
 #> #   Value <dbl>, NetMass <dbl>
 ```
 
-## :woman: Example using trader data
+## Example using trader data
 
 Trader code is a work in progress…
 
-## :link: Example using a custom URL
+## Example using a custom URL
 
 This example uses the `load_custom()` function to replicate the example
 given in the [API
@@ -249,7 +254,7 @@ results. This function is also the workhorse (no pun intended) behind
 the other functions.
 
 ``` r
-data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)", 
+data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)",
     output = "tibble")
 
 data
@@ -291,7 +296,7 @@ tidyr::unnest(data, Exports, names_repair = "unique")
 #> #   CommodityId...12 <int>, MonthId <int>, Trader <df[,8]>
 ```
 
-## :copyright: MIT License
+## MIT License
 
 You’re free to use this code and its associated documentation without
 restriction. This includes both personal and commercial use. However,
