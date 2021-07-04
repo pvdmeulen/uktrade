@@ -36,6 +36,12 @@ for accessing bulk trade (and trader) data. For smaller trade data
 extracts (&lt; 30,000 rows), the [online
 tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
+For more information on the various API endpoints and options, see
+[HMRC’s API
+documentation](https://www.uktradeinfo.com/api-documentation/). Note
+that this service and the website itself are in beta at the time of
+writing - features may still be added or changed.
+
 ## This package
 
 This package contains four functions:
@@ -63,11 +69,11 @@ case of trader data, expand specific columns to get more information).
 ## Example using OTS and RTS data
 
 These functions are convenient wrappers for loading trade data - either
-UK trade data using OTS, or regional UK trade data using RTS. These
-functions will load the raw data and optionally join results with
-lookups obtained from the API (using, for example, the /Commodity and
-/Country endpoints). This makes data easy to read by humans, but also
-larger (more columns containing text).
+detailed UK trade data using OTS (by CN8 code), or regional UK trade
+data using RTS (by SITC2 code). These functions will load the raw data
+and optionally join results with lookups obtained from the API (using,
+for example, the /Commodity and /Country endpoints). This makes data
+easy to read by humans, but also larger (more columns containing text).
 
 ### OTS
 
@@ -98,8 +104,9 @@ data
 #> #   NetMass <dbl>, SuppUnit <dbl>
 ```
 
-Note that the month argument specifies a range in the form of
-`c(min, max)`, not two months.
+Note that the `month` argument specifies a range in the form of
+`c(min, max)`, while the `commodity` argument specifies a collection of
+commodities (not a range).
 
 As you can see, results are not easily interpretable as they stand. The
 HMRC API also has lookups which can be loaded separately using
@@ -138,8 +145,8 @@ data
 ```
 
 Loading aggregate data (such as all spirits, HS4 code 2208) is possible
-too (in the background, this is loading commodity codes larger than or
-equal to 22080000, and less than or equal to 22089999):
+too (in the background, this is loading commodity codes greater than or
+equal to 22080000 and less than or equal to 22089999):
 
 ``` r
 data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE)
@@ -202,15 +209,15 @@ data
 #> #   Value <dbl>, NetMass <dbl>, SuppUnit <dbl>
 ```
 
-Loading OTS data by their SITC classification is a work in progress…
+*Loading OTS data by their SITC classification is a work in progress…*
 
 ### RTS
 
 Loading all UK regional trade of 2-digit SITC Divisions ‘00 - Live
 animals other than animals of division 03’ to ‘11 - Beverages’ for 2019
 is done by specifying `sitc = c(00, 11)` (leading zeros are removed).
-This again specifies a range (like with months) to avoid URLs being too
-long.
+This again specifies a range, similar to the `month` argument. This is
+done to avoid URLs being too long.
 
 ``` r
 data <- load_rts(month = c(201901, 201912), sitc = c(0, 11), join_lookup = TRUE)
@@ -240,7 +247,7 @@ data
 
 ## Example using trader data
 
-Trader code is a work in progress…
+*Trader code is a work in progress…*
 
 ## Example using a custom URL
 
@@ -267,11 +274,11 @@ data
 #> #   Cn8LongDescription <chr>, Exports <list>
 ```
 
-Note that the expanded columns, Exports and Trader, both need to be
-expanded as they are contained in a nested <list> column. When unnested
-using `tidyr::unnest()`, we can see the final results. The second
-expanded column (Trader) itself contains 8 columns (which are TraderId,
-CompanyName, five Address columns, and PostCode).
+Note that the variables expanded in the API query, Exports and Trader,
+both need to be expanded as they are contained in a nested <list>
+column. When unnested using `tidyr::unnest()`, we can see the final
+results. The second expanded variable (Trader) itself contains 8 columns
+(which are TraderId, CompanyName, five Address columns, and PostCode).
 
 ``` r
 tidyr::unnest(data, Exports, names_repair = "unique")
