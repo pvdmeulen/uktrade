@@ -13,6 +13,7 @@
 #' @param suppression One or more suppression codes. Takes one or more integers between 1 and 5 (see HMRC API guidance for information). Defaults to NULL (all available results).
 #' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param join_lookup A logical value indicating whether results should be joined with lookups from the API. Defaults to TRUE. Setting to FALSE will return a smaller but less human-readable dataframe containing only codes.
+#' @param skip_interval Passed to load_custom(). A non-negative integer value showing the skip interval for paginated results. Defaults to 40,000 rows.
 #'
 #' @importFrom dplyr left_join
 #' @importFrom dplyr select
@@ -41,7 +42,7 @@
 load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL,
                      sitc = NULL, country = NULL, region = NULL,
                      port = NULL, suppression = NULL, join_lookup = TRUE,
-                     output = "tibble"){
+                     output = "tibble", skip_interval = 4e4){
 
   # If no commodities are chosen, load all (detailed):
   if(any(is.null(commodity)) | any(is.element(commodity, 0))){
@@ -68,7 +69,8 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL,
   # Needs to be loaded upfront since argument is specified in ISO codes:
 
   country_region_lookup <- load_custom(endpoint = "Country", output = output,
-                                       request = request, timer = timer)
+                                       request = request, timer = timer,
+                                       skip_interval = skip_interval)
 
   chosen_country_id <- if(is.null(country)){
 
@@ -123,7 +125,8 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL,
   # Load OTS data:
   ots_data <- load_custom(endpoint = "OTS", custom_search = paste0("?$filter=",
                                                                    filter),
-                          output = output, request = request, timer = timer)
+                          output = output, request = request, timer = timer,
+                          skip_interval = skip_interval)
 
   if(join_lookup == FALSE) { return(ots_data) } else {
 
@@ -152,7 +155,8 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL,
                                     custom_search = commodity_filter,
                                     output = output,
                                     request = request,
-                                    timer = timer)
+                                    timer = timer,
+                                    skip_interval = skip_interval)
 
     # Remove potential odata column:
 
@@ -174,7 +178,8 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL,
                                custom_search = sitc_filter,
                                output = output,
                                request = request,
-                               timer = timer)
+                               timer = timer,
+                               skip_interval = skip_interval)
 
     # Remove potential odata column:
 
@@ -197,7 +202,8 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL,
                                custom_search = flow_filter,
                                output = output,
                                request = request,
-                               timer = timer)
+                               timer = timer,
+                               skip_interval = skip_interval)
 
     # Remove potential odata column:
 
@@ -220,7 +226,8 @@ load_ots <- function(month = NULL, flow = c(1, 2, 3, 4), commodity = NULL,
                                custom_search = port_filter,
                                output = output,
                                request = request,
-                               timer = timer)
+                               timer = timer,
+                               skip_interval = skip_interval)
 
     # Remove potential odata column:
 

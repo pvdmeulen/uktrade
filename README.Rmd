@@ -37,7 +37,7 @@ Her Majesty's Revenue & Customs (HMRC) is the :uk: UK's customs authority. Data 
 
 In the beginning of 2021, the [uktradeinfo.com](https://www.uktradeinfo.com/) website was updated. This update also introduced an Application Programming Interface (API) for accessing bulk trade (and trader) data. For smaller trade data extracts (< 30,000 rows), the [online tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
-For more information on the various API endpoints and options, see [HMRC's API documentation](https://www.uktradeinfo.com/api-documentation/). Note that this service and the website itself are in beta at the time of writing - features may still be added or changed.
+For more information on the various API endpoints and options, see [HMRC's API documentation](https://www.uktradeinfo.com/api-documentation/). Note that this service and the website itself are in beta at the time of writing - features may still be added or changed (e.g. the [number of rows per page was increased](https://www.uktradeinfo.com/news/enhancement-made-to-uktradeinfo-api-service/) from 30,000 to 40,000 in December 2021).
 
 ## This package
 
@@ -50,7 +50,7 @@ This package contains four functions:
 |`load_trader()`  |a function for loading trader data                     |:red_circle: *planned*                         |
 |`load_custom()`  |a function for loading a custom URL                    |:yellow_circle: experimental (use at own risk) |
 
-All of these functions will output a `dataframe` object (or `tibble`) with the desired data, and are able to keep track of paginated results (in batches of 30,000 rows) as well as the API request limit of 60 requests per minute.
+All of these functions will output a `dataframe` object (or `tibble`) with the desired data, and are able to keep track of paginated results (in batches of 40,000 rows) as well as the API request limit of 60 requests per minute.
 
 The first three are convenient wrapper functions which should make loading basic datasets easier (with the assumption that further data manipulation will be done in R after loading the data). Of course, the API allows for extensive customisation in what data is obtained. For this purpose, `load_custom()` allows you to specify a custom URL instead. This allows you to be more specific in your request (and in the case of trader data, expand specific columns to get more information).
 

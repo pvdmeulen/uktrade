@@ -12,7 +12,8 @@ load_rts(
   region = NULL,
   uk_country = NULL,
   join_lookup = TRUE,
-  output = "tibble"
+  output = "tibble",
+  skip_interval = 40000
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ load_rts(
 \item{join_lookup}{A logical value indicating whether results should be joined with lookups from the API. Defaults to TRUE. Setting to FALSE will return a smaller but less human-readable dataframe containing only codes.}
 
 \item{output}{A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".}
+
+\item{skip_interval}{Passed to load_custom(). A non-negative integer value showing the skip interval for paginated results. Defaults to 40,000 rows.}
 }
 \value{
 Returns a dataframe or tibble

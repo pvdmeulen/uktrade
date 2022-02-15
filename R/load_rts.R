@@ -11,6 +11,7 @@
 #' @param uk_country One or more destination or origin UK countries. Defaults to NULL (all countries). Takes one or more of the following: "England", "Wales", "Scotland", "Northern Ireland", and/or "Unallocated". England may have multiple regions within it, and Unallocated may be split between known and unknown.
 #' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param join_lookup A logical value indicating whether results should be joined with lookups from the API. Defaults to TRUE. Setting to FALSE will return a smaller but less human-readable dataframe containing only codes.
+#' @param skip_interval Passed to load_custom(). A non-negative integer value showing the skip interval for paginated results. Defaults to 40,000 rows.
 #'
 #' @importFrom dplyr left_join
 #' @importFrom dplyr select
@@ -45,7 +46,8 @@ load_rts <- function(month = NULL,
                      region = NULL,
                      uk_country = NULL,
                      join_lookup = TRUE,
-                     output = "tibble"){
+                     output = "tibble",
+                     skip_interval = 4e4){
 
   # If no commodities are chosen, load all (detailed):
 
@@ -67,7 +69,8 @@ load_rts <- function(month = NULL,
   # Needs to be loaded upfront since argument is specified in ISO codes:
 
   country_region_lookup <- load_custom(endpoint = "Country", output = output,
-                                       request = request, timer = timer)
+                                       request = request, timer = timer,
+                                       skip_interval = skip_interval)
 
   chosen_country_id <- if(is.null(country)){
 
@@ -96,7 +99,7 @@ load_rts <- function(month = NULL,
   ukcountry_lookup <- load_custom(endpoint = "Region",
                                   output = output,
                                   request = request,
-                                  timer = timer)
+                                  timer = timer, skip_interval = skip_interval)
 
   # Distinguish UK country/region from destination/origin region (e.g. EU):
   colnames(ukcountry_lookup) <- paste0("Gov",  colnames(ukcountry_lookup))
@@ -141,7 +144,7 @@ load_rts <- function(month = NULL,
                           custom_search = paste0("?$filter=", filter),
                           output = output,
                           request = request,
-                          timer = timer)
+                          timer = timer, skip_interval = skip_interval)
 
   if(join_lookup == FALSE) { return(rts_data) } else {
 
@@ -167,7 +170,7 @@ load_rts <- function(month = NULL,
                                custom_search = sitc_filter,
                                output = output,
                                request = request,
-                               timer = timer)
+                               timer = timer, skip_interval = skip_interval)
 
     # Remove potential odata column:
 
@@ -190,7 +193,7 @@ load_rts <- function(month = NULL,
                                custom_search = flow_filter,
                                output = output,
                                request = request,
-                               timer = timer)
+                               timer = timer, skip_interval = skip_interval)
 
     # Remove potential odata column:
 

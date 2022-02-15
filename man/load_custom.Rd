@@ -9,7 +9,7 @@ load_custom(
   endpoint,
   custom_search = "",
   request = 1,
-  skip_interval = 30000,
+  skip_interval = 40000,
   timer = NULL,
   output = "tibble",
   debug = FALSE
@@ -24,7 +24,7 @@ load_custom(
 
 \item{request}{A non-negative integer value to keep track of the starting number of requests made. Defaults to zero. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).}
 
-\item{skip_interval}{A non-negative integer value showing the skip interval for paginated results. Defaults to 30,000 rows.}
+\item{skip_interval}{A non-negative integer value showing the skip interval for paginated results. Defaults to 40,000 rows.}
 
 \item{timer}{A non-negative integer value (seconds) to keep track of the time taken so far. Defaults to NULL. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).}
 

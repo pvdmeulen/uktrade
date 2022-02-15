@@ -6,7 +6,7 @@
 #' @param base_url Base URL for use in API. Defaults to https://api.uktradeinfo.com.
 #' @param endpoint Endpoint for use in API. Takes a single character string with no default.
 #' @param custom_search Custom query. Takes a single character string with no default.
-#' @param skip_interval A non-negative integer value showing the skip interval for paginated results. Defaults to 30,000 rows.
+#' @param skip_interval A non-negative integer value showing the skip interval for paginated results. Defaults to 40,000 rows.
 #' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param request A non-negative integer value to keep track of the starting number of requests made. Defaults to zero. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
 #' @param timer A non-negative integer value (seconds) to keep track of the time taken so far. Defaults to NULL. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
@@ -44,7 +44,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
                         endpoint,
                         custom_search = "",
                         request = 1,
-                        skip_interval = 30000,
+                        skip_interval = 4e4,
                         timer = NULL,
                         output = "tibble",
                         debug = FALSE){
