@@ -33,29 +33,32 @@ In the beginning of 2021, the
 [uktradeinfo.com](https://www.uktradeinfo.com/) website was updated.
 This update also introduced an Application Programming Interface (API)
 for accessing bulk trade (and trader) data. For smaller trade data
-extracts (&lt; 30,000 rows), the [online
+extracts (\< 30,000 rows), the [online
 tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
 For more information on the various API endpoints and options, see
 [HMRC’s API
 documentation](https://www.uktradeinfo.com/api-documentation/). Note
 that this service and the website itself are in beta at the time of
-writing - features may still be added or changed.
+writing - features may still be added or changed (e.g. the [number of
+rows per page was
+increased](https://www.uktradeinfo.com/news/enhancement-made-to-uktradeinfo-api-service/)
+from 30,000 to 40,000 in December 2021).
 
 ## This package
 
 This package contains four functions:
 
-| Function        | Description                                           | Status                                          |
-|-----------------|-------------------------------------------------------|-------------------------------------------------|
-| `load_ots()`    | a function for loading Overseas Trade Statistics data | :yellow\_circle: experimental (use at own risk) |
-| `load_rts()`    | a function for loading Regional Trade Statistics data | :yellow\_circle: experimental (use at own risk) |
-| `load_trader()` | a function for loading trader data                    | :red\_circle: *planned*                         |
-| `load_custom()` | a function for loading a custom URL                   | :yellow\_circle: experimental (use at own risk) |
+| Function        | Description                                           | Status                                         |
+|-----------------|-------------------------------------------------------|------------------------------------------------|
+| `load_ots()`    | a function for loading Overseas Trade Statistics data | :yellow_circle: experimental (use at own risk) |
+| `load_rts()`    | a function for loading Regional Trade Statistics data | :yellow_circle: experimental (use at own risk) |
+| `load_trader()` | a function for loading trader data                    | :red_circle: *planned*                         |
+| `load_custom()` | a function for loading a custom URL                   | :yellow_circle: experimental (use at own risk) |
 
 All of these functions will output a `dataframe` object (or `tibble`)
 with the desired data, and are able to keep track of paginated results
-(in batches of 30,000 rows) as well as the API request limit of 60
+(in batches of 40,000 rows) as well as the API request limit of 60
 requests per minute.
 
 The first three are convenient wrapper functions which should make
@@ -139,9 +142,7 @@ data
 #> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
 #> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
 #> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>,
-#> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>,
-#> #   PortId <int>, PortCodeNumeric <chr>, PortCodeAlpha <chr>, PortName <chr>,
-#> #   Value <dbl>, NetMass <dbl>, SuppUnit <dbl>
+#> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>, ...
 ```
 
 Loading aggregate data (such as all spirits, HS4 code 2208) is possible
@@ -171,9 +172,7 @@ data
 #> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
 #> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
 #> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>,
-#> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>,
-#> #   PortId <int>, PortCodeNumeric <chr>, PortCodeAlpha <chr>, PortName <chr>,
-#> #   Value <dbl>, NetMass <dbl>, SuppUnit <dbl>
+#> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>, ...
 ```
 
 Similarly, specifying `commodity = NULL` will load all commodities (this
@@ -204,9 +203,7 @@ data
 #> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
 #> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
 #> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>,
-#> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>,
-#> #   PortId <int>, PortCodeNumeric <chr>, PortCodeAlpha <chr>, PortName <chr>,
-#> #   Value <dbl>, NetMass <dbl>, SuppUnit <dbl>
+#> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>, ...
 ```
 
 *Loading OTS data by their SITC classification is a work in progress…*
@@ -223,7 +220,7 @@ done to avoid URLs being too long.
 data <- load_rts(month = c(201901, 201912), sitc = c(0, 11), join_lookup = TRUE)
 
 data
-#> # A tibble: 64,377 x 26
+#> # A tibble: 64,357 x 26
 #>    MonthId FlowTypeId FlowTypeDescription  Sitc1Code Sitc1Desc  CommoditySitc2Id
 #>      <int>      <int> <chr>                <chr>     <chr>                 <int>
 #>  1  201901          3 "Non-EU Imports    ~ 0         Food & li~                0
@@ -236,7 +233,7 @@ data
 #>  8  201910          3 "Non-EU Imports    ~ 0         Food & li~                0
 #>  9  201901          3 "Non-EU Imports    ~ 0         Food & li~                0
 #> 10  201904          3 "Non-EU Imports    ~ 0         Food & li~                0
-#> # ... with 64,367 more rows, and 20 more variables: Sitc2Code <chr>,
+#> # ... with 64,347 more rows, and 20 more variables: Sitc2Code <chr>,
 #> #   Sitc2Desc <chr>, GovRegionId <int>, GovRegionCodeNumeric <chr>,
 #> #   GovRegionGroupCodeAlpha <chr>, GovRegionName <chr>,
 #> #   GovRegionGroupName <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,

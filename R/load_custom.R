@@ -72,7 +72,8 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
                                      ), " seconds"))}
 
     # Construct skip suffix:
-    skip_suffix <- if(skip == 0) { NULL } else { paste0("&$skip=", skip) }
+    skip_suffix <- if(skip == 0) { NULL } else {
+      paste0("&$skip=", format(skip, scientific = FALSE)) }
 
     # Construct URL:
     url <- paste0(base_url, "/", endpoint, custom_search, skip_suffix)
