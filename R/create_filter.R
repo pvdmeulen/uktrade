@@ -15,13 +15,14 @@ create_filter <- function(list){
   templist <- list()
 
   if (name == "CommodityId") {
-    # If HS2, HS4, HS6 codes are full (w/o leading zeros), pad them to be 8
+
+    # If HS2, HS4, HS6 codes are full (w/ leading zeros), pad them to be 8
     # characters long and combine with a 'greater than or equal to ....0000 and
     # less than or equal to ...9999' type filter:
 
     templist["Full HS246 Codes"] <-
+      paste0("(",
       paste0(
-        "(",
         name,
         " ge ",
         stringr::str_pad(
@@ -39,17 +40,18 @@ create_filter <- function(list){
           side = "right",
           width = 8
         ),
-        collapse = " or ",
+        collapse = " or "
+        ),
         ")"
       )
 
-    # If HS2, HS4, HS6 codes are partial (w/ leading zeros), pad them to be
+    # If HS2, HS4, HS6 codes are partial (w/o leading zeros), pad them to be
     # 7 characters long and combine with a 'greater than or equal to ...0000 and
     # less than or equal to ..9999' type filter:
 
     templist["Partial HS246 Codes"] <-
+      paste0("(",
       paste0(
-        "(",
         name,
         " ge ",
         stringr::str_pad(
@@ -67,8 +69,9 @@ create_filter <- function(list){
           side = "right",
           width = 7
         ),
-        collapse = " or ",
-        ")"
+        collapse = " or "
+      ),
+      ")"
       )
 
     # If there are CN8 codes, create a simple 'equal to ........ or equal
