@@ -15,7 +15,9 @@ load_ots(
   suppression = NULL,
   join_lookup = TRUE,
   output = "tibble",
-  skip_interval = 40000
+  skip_interval = 40000,
+  use_proxy = FALSE,
+  ...
 )
 }
 \arguments{
@@ -40,6 +42,10 @@ load_ots(
 \item{output}{A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".}
 
 \item{skip_interval}{Passed to load_custom(). A non-negative integer value showing the skip interval for paginated results. Defaults to 40,000 rows.}
+
+\item{use_proxy}{A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `use_proxy()` from `httr`.}
+
+\item{...}{Optional arguments to be passed along to `use_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr` documentation for more details.}
 }
 \value{
 Returns a dataframe or tibble

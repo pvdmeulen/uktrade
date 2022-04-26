@@ -12,7 +12,9 @@ load_custom(
   skip_interval = 40000,
   timer = NULL,
   output = "tibble",
-  debug = FALSE
+  debug = FALSE,
+  use_proxy = FALSE,
+  ...
 )
 }
 \arguments{
@@ -31,6 +33,10 @@ load_custom(
 \item{output}{A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".}
 
 \item{debug}{A logical. Defaults to FALSE. Setting this to TRUE will print the number of datasets as they are being loaded as well as the elapsed time.}
+
+\item{use_proxy}{A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `use_proxy()` from `httr`.}
+
+\item{...}{Optional arguments to be passed along to `use_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr` documentation for more details.}
 }
 \value{
 Returns a dataframe or tibble containing the API response

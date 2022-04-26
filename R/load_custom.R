@@ -11,6 +11,8 @@
 #' @param request A non-negative integer value to keep track of the starting number of requests made. Defaults to zero. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
 #' @param timer A non-negative integer value (seconds) to keep track of the time taken so far. Defaults to NULL. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
 #' @param debug A logical. Defaults to FALSE. Setting this to TRUE will print the number of datasets as they are being loaded as well as the elapsed time.
+#' @param use_proxy A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `use_proxy()` from `httr`.
+#' @param ... Optional arguments to be passed along to `use_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr` documentation for more details.
 #'
 #' @importFrom httr GET
 #' @importFrom dplyr bind_rows
@@ -47,7 +49,10 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
                         skip_interval = 4e4,
                         timer = NULL,
                         output = "tibble",
-                        debug = FALSE){
+                        debug = FALSE,
+                        use_proxy = FALSE,
+                        ...
+){
 
   check_internet()
 
@@ -79,7 +84,16 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
     url <- paste0(base_url, "/", endpoint, custom_search, skip_suffix)
 
     # Get API response:
-    response <- httr::GET(utils::URLencode(url))
+
+    if(use_proxy == TRUE){
+
+      response <- httr::GET(utils::URLencode(url), use_proxy(...))
+
+    } else {
+
+      response <- httr::GET(utils::URLencode(url))
+
+    }
 
     # Check status:
     check_status(response)
