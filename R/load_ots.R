@@ -9,7 +9,7 @@
 #' @param sitc One or more SITC1, SITC2, SITC4, or SITC5 commodity codes in the form of a numeric vector. Defaults to NULL (all commodities).
 #' @param country One or more destination or origin countries by their 2-letter ISO code. Defaults to NULL (all countries).
 #' @param region One or more destination or origin regions. Defaults to NULL (all regions). Takes one or more of the following broad categories: "Asia and Oceania", "Eastern Europe exc EU", "European Union", "Latin America and Caribbean", "Middle East and N Africa", "North America", "Sub-Saharan Africa", "Western Europe exc EU", "Western Europe exc EC", "Low Value Trade", "Stores and Provisions", and/or "Confidential Region".
-#' @param port One or more departure or arrival ports (only available for trade with non-EU countries prior to 2021, and all trade post-2021). Defaults to NULL (all ports).
+#' @param uk_port One or more departure or arrival ports by their three-letter code (only available for trade with non-EU countries prior to 2021, and all trade post-2021). Defaults to NULL (all ports in the UK).
 #' @param suppression One or more suppression codes. Takes one or more integers between 1 and 5 (see HMRC API guidance for information). Defaults to NULL (all available results).
 #' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param join_lookup A logical value indicating whether results should be joined with lookups from the API. Defaults to TRUE. Setting to FALSE will return a smaller but less human-readable dataframe containing only codes.
@@ -47,7 +47,7 @@ load_ots <- function(month = NULL,
                      sitc = NULL,
                      country = NULL,
                      region = NULL,
-                     port = NULL,
+                     uk_port = NULL,
                      suppression = NULL,
                      join_lookup = TRUE,
                      output = "tibble",
@@ -114,7 +114,7 @@ load_ots <- function(month = NULL,
   # Put filter arguments in a list:
   args_list <- list(FlowTypeId = flow, MonthId = month, CommodityId = commodity,
                     CommoditySitcId = sitc, RegionId = chosen_region_id,
-                    CountryId = chosen_country_id, PortId = port,
+                    CountryId = chosen_country_id, PortId = uk_port,
                     SuppressionIndex = suppression)
 
   # Take out NULL arguments from filter:

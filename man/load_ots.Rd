@@ -11,7 +11,7 @@ load_ots(
   sitc = NULL,
   country = NULL,
   region = NULL,
-  port = NULL,
+  uk_port = NULL,
   suppression = NULL,
   join_lookup = TRUE,
   output = "tibble",
@@ -33,7 +33,7 @@ load_ots(
 
 \item{region}{One or more destination or origin regions. Defaults to NULL (all regions). Takes one or more of the following broad categories: "Asia and Oceania", "Eastern Europe exc EU", "European Union", "Latin America and Caribbean", "Middle East and N Africa", "North America", "Sub-Saharan Africa", "Western Europe exc EU", "Western Europe exc EC", "Low Value Trade", "Stores and Provisions", and/or "Confidential Region".}
 
-\item{port}{One or more departure or arrival ports (only available for trade with non-EU countries prior to 2021, and all trade post-2021). Defaults to NULL (all ports).}
+\item{uk_port}{One or more departure or arrival ports by their three-letter code (only available for trade with non-EU countries prior to 2021, and all trade post-2021). Defaults to NULL (all ports in the UK).}
 
 \item{suppression}{One or more suppression codes. Takes one or more integers between 1 and 5 (see HMRC API guidance for information). Defaults to NULL (all available results).}
 
