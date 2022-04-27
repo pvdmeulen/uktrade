@@ -15,6 +15,7 @@
 #' @param ... Optional arguments to be passed along to `use_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr` documentation for more details.
 #'
 #' @importFrom httr GET
+#' @importFrom httr use_proxy
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr as_tibble
 #'
@@ -87,7 +88,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
 
     if(use_proxy == TRUE){
 
-      response <- httr::GET(utils::URLencode(url), use_proxy(...))
+      response <- httr::GET(utils::URLencode(url), httr::use_proxy(...))
 
     } else {
 
