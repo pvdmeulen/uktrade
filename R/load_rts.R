@@ -9,8 +9,9 @@
 #' @param country One or more destination or origin countries by their 2-letter ISO code. Defaults to NULL (all countries).
 #' @param region One or more destination or origin regions. Defaults to NULL (all regions). Takes one or more of the following broad categories: "Asia and Oceania", "Eastern Europe exc EU", "European Union", "Latin America and Caribbean", "Middle East and N Africa", "North America", "Sub-Saharan Africa", "Western Europe exc EU", "Western Europe exc EC", "Low Value Trade", "Stores and Provisions", and/or "Confidential Region".
 #' @param uk_country One or more destination or origin UK countries. Defaults to NULL (all countries). Takes one or more of the following: "England", "Wales", "Scotland", "Northern Ireland", and/or "Unallocated". England may have multiple regions within it, and Unallocated may be split between known and unknown.
-#' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param join_lookup A logical value indicating whether results should be joined with lookups from the API. Defaults to TRUE. Setting to FALSE will return a smaller but less human-readable dataframe containing only codes.
+#' @param print_url A logical. Defaults to FALSE. Setting this to TRUE will print the URL(s) used to load the trade data to the console.
+#' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param skip_interval Passed to load_custom(). A non-negative integer value showing the skip interval for paginated results. Defaults to 40,000 rows.
 #' @param use_proxy A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `use_proxy()` from `httr`.
 #' @param ... Optional arguments to be passed along to `use_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr` documentation for more details.
@@ -48,6 +49,7 @@ load_rts <- function(month = NULL,
                      region = NULL,
                      uk_country = NULL,
                      join_lookup = TRUE,
+                     print_url = FALSE,
                      output = "tibble",
                      skip_interval = 4e4,
                      use_proxy = FALSE,
@@ -76,6 +78,7 @@ load_rts <- function(month = NULL,
   country_region_lookup <- load_custom(endpoint = "Country", output = output,
                                        request = request, timer = timer,
                                        skip_interval = skip_interval,
+                                       print_url = FALSE,
                                        use_proxy = use_proxy, ...)
 
   chosen_country_id <- if(is.null(country)){
@@ -106,6 +109,7 @@ load_rts <- function(month = NULL,
                                   output = output,
                                   request = request,
                                   timer = timer, skip_interval = skip_interval,
+                                  print_url = FALSE,
                                   use_proxy = use_proxy, ...)
 
   # Distinguish UK country/region from destination/origin region (e.g. EU):
@@ -150,8 +154,8 @@ load_rts <- function(month = NULL,
   rts_data <- load_custom(endpoint = "RTS",
                           custom_search = paste0("?$filter=", filter),
                           output = output,
-                          request = request,
-                          timer = timer, skip_interval = skip_interval,
+                          request = request, timer = timer,
+                          skip_interval = skip_interval, print_url = print_url,
                           use_proxy = use_proxy, ...)
 
   if(join_lookup == FALSE) { return(rts_data) } else {
@@ -179,6 +183,7 @@ load_rts <- function(month = NULL,
                                output = output,
                                request = request,
                                timer = timer, skip_interval = skip_interval,
+                               print_url = FALSE,
                                use_proxy = use_proxy, ...)
 
     # Remove potential odata column:
@@ -203,6 +208,7 @@ load_rts <- function(month = NULL,
                                output = output,
                                request = request,
                                timer = timer, skip_interval = skip_interval,
+                               print_url = FALSE,
                                use_proxy = use_proxy, ...)
 
     # Remove potential odata column:

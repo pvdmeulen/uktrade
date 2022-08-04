@@ -1,7 +1,7 @@
 Package: uktrade
 Type: Package
 Title: Accessing Data Through HMRC's API
-Version: 0.5.0
+Version: 0.6.0
 Authors@R: person("van der Meulen", "Peter", email = "peter.vd.meulen@outlook.com", role = c("aut", "cre"))
 Description: This package is a wrapper for HMRC's newly released API. It provides convenient functions to load Overseas Trade Statistics, Regional Trade Statistics, and trader data. It also provides a function for loading custom URLs.
 License: MIT + file LICENSE
@@ -17,4 +17,4 @@ Imports:
   stringr,
   dplyr,
   rlang
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1

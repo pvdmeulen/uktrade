@@ -100,7 +100,21 @@ data <- load_ots(month = 201901, country = "AU", flow = 4, commodity = NULL, joi
 data
 ```
 
-*Loading OTS data by their SITC classification is a work in progress...*
+Alternatively, we can use SITC codes - here, we load all live beverages (SITC2 code 11):
+
+```{r load_ots example with join and sitc commodities}
+data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = "11", join_lookup = TRUE)
+
+data
+```
+
+Note that these need to be in character format, and include any leading zeros. This is because, unlike HS or CN codes, odd SITC codes exist (e.g. SITC1). We can also select a selection of codes in a similar way to HS/CN codes:
+
+```{r load_ots example with join and sitc commodities 2}
+data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = c("0", "11", "2", "71"), join_lookup = TRUE)
+
+data
+```
 
 ### RTS
 

@@ -10,6 +10,7 @@
 #' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param request A non-negative integer value to keep track of the starting number of requests made. Defaults to zero. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
 #' @param timer A non-negative integer value (seconds) to keep track of the time taken so far. Defaults to NULL. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
+#' @param print_url A logical. Defaults to FALSE. Setting this to TRUE will print the URL(s) used to load data to the console.
 #' @param debug A logical. Defaults to FALSE. Setting this to TRUE will print the number of datasets as they are being loaded as well as the elapsed time.
 #' @param use_proxy A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `use_proxy()` from `httr`.
 #' @param ... Optional arguments to be passed along to `use_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr` documentation for more details.
@@ -50,6 +51,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
                         skip_interval = 4e4,
                         timer = NULL,
                         output = "tibble",
+                        print_url = FALSE,
                         debug = FALSE,
                         use_proxy = FALSE,
                         ...
@@ -67,6 +69,9 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
   # Create timer reference point:
   timer <- if(is.null(timer)){ proc.time() } else { timer }
 
+  # URL print message if set to TRUE:
+  if(print_url == TRUE){message("Loading data via the following URL(s):")}
+
   # While not all results are loaded:
   while(done == FALSE){
 
@@ -75,7 +80,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
                                    " with an elapsed time of ",
                                    round(
                                      proc.time()[[3]] - timer[[3]], digits = 3
-                                     ), " seconds"))}
+                                   ), " seconds"))}
 
     # Construct skip suffix:
     skip_suffix <- if(skip == 0) { NULL } else {
@@ -83,6 +88,9 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
 
     # Construct URL:
     url <- paste0(base_url, "/", endpoint, custom_search, skip_suffix)
+
+    # Print URL if set to TRUE:
+    if(print_url == TRUE){message("URL ", request, ": ", url)}
 
     # Get API response:
 
@@ -148,7 +156,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
 
     dplyr::as_tibble(dplyr::bind_rows(data))
 
-    }
+  }
 
   return(data)
 

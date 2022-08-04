@@ -12,6 +12,7 @@ load_rts(
   region = NULL,
   uk_country = NULL,
   join_lookup = TRUE,
+  print_url = FALSE,
   output = "tibble",
   skip_interval = 40000,
   use_proxy = FALSE,
@@ -32,6 +33,8 @@ load_rts(
 \item{uk_country}{One or more destination or origin UK countries. Defaults to NULL (all countries). Takes one or more of the following: "England", "Wales", "Scotland", "Northern Ireland", and/or "Unallocated". England may have multiple regions within it, and Unallocated may be split between known and unknown.}
 
 \item{join_lookup}{A logical value indicating whether results should be joined with lookups from the API. Defaults to TRUE. Setting to FALSE will return a smaller but less human-readable dataframe containing only codes.}
+
+\item{print_url}{A logical. Defaults to FALSE. Setting this to TRUE will print the URL(s) used to load the trade data to the console.}
 
 \item{output}{A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".}
 

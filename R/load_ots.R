@@ -5,14 +5,15 @@
 #' A function for loading OTS data via HMRC's API.
 #' @param month The month(s) to be loaded in the form of a vector of two integers (YYYYMM), where the first element is the minimum date, and second the maximum date. Defaults to NULL (all months).
 #' @param flow The trade flow to be loaded. Takes one ore more integers (1, 2, 3, and/or 4), where 1 is EU imports, 2 is EU exports, 3 is non-EU imports, and 4 is non-EU exports. Defaults to NULL (all flows).
-#' @param commodity One or more HS2, HS4, HS6, or CN8 commodity codes in the form of a numeric vector. Defaults to NULL (all commodities).
-#' @param sitc One or more SITC1, SITC2, SITC4, or SITC5 commodity codes in the form of a numeric vector. Defaults to NULL (all commodities).
+#' @param commodity One or more HS2, HS4, HS6, or CN8 commodity codes in the form of a numeric or character vector. Defaults to NULL (all commodities). Any missing leading zeros will be automatically added.
+#' @param sitc One or more SITC1, SITC2, SITC3, SITC4, or SITC5 commodity codes in the form of a character vector. Defaults to NULL (all commodities).
 #' @param country One or more destination or origin countries by their 2-letter ISO code. Defaults to NULL (all countries).
 #' @param region One or more destination or origin regions. Defaults to NULL (all regions). Takes one or more of the following broad categories: "Asia and Oceania", "Eastern Europe exc EU", "European Union", "Latin America and Caribbean", "Middle East and N Africa", "North America", "Sub-Saharan Africa", "Western Europe exc EU", "Western Europe exc EC", "Low Value Trade", "Stores and Provisions", and/or "Confidential Region".
 #' @param uk_port One or more departure or arrival ports by their three-letter code (only available for trade with non-EU countries prior to 2021, and all trade post-2021). Defaults to NULL (all ports in the UK).
 #' @param suppression One or more suppression codes. Takes one or more integers between 1 and 5 (see HMRC API guidance for information). Defaults to NULL (all available results).
-#' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param join_lookup A logical value indicating whether results should be joined with lookups from the API. Defaults to TRUE. Setting to FALSE will return a smaller but less human-readable dataframe containing only codes.
+#' @param print_url A logical. Defaults to FALSE. Setting this to TRUE will print the URL(s) used to load the trade data to the console.
+#' @param output A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".
 #' @param skip_interval Passed to load_custom(). A non-negative integer value showing the skip interval for paginated results. Defaults to 40,000 rows.
 #' @param use_proxy A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `use_proxy()` from `httr`.
 #' @param ... Optional arguments to be passed along to `use_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr` documentation for more details.
@@ -50,6 +51,7 @@ load_ots <- function(month = NULL,
                      uk_port = NULL,
                      suppression = NULL,
                      join_lookup = TRUE,
+                     print_url = FALSE,
                      output = "tibble",
                      skip_interval = 4e4,
                      use_proxy = FALSE,
@@ -57,7 +59,7 @@ load_ots <- function(month = NULL,
                      ){
 
   # If no commodities are chosen, load all (detailed):
-  if(any(is.null(commodity)) | any(is.element(commodity, 0))){
+  if(all(is.null(c(commodity, sitc))) | any(is.element(commodity, 0)) & is.null(sitc)){
     message(
       "Loading detailed trade data for all commodities. This may take a while."
       )
@@ -67,6 +69,12 @@ load_ots <- function(month = NULL,
   if(length(commodity) > 1 & any(is.element(commodity, 0))){
     stop(
       "Select a collection of commodities or `NULL` for all goods (not both).")
+  }
+
+  # Check SITC codes are characters selection:
+  if(!is.null(sitc) & !is.character(sitc)){
+    stop(
+      "Specify your SITC code(s) in <character> format.")
   }
 
   # Check for internet:
@@ -83,6 +91,7 @@ load_ots <- function(month = NULL,
   country_region_lookup <- load_custom(endpoint = "Country", output = output,
                                        request = request, timer = timer,
                                        skip_interval = skip_interval,
+                                       print_url = FALSE,
                                        use_proxy = use_proxy, ...)
 
   chosen_country_id <- if(is.null(country)){
@@ -139,7 +148,7 @@ load_ots <- function(month = NULL,
   ots_data <- load_custom(endpoint = "OTS", custom_search = paste0("?$filter=",
                                                                    filter),
                           output = output, request = request, timer = timer,
-                          skip_interval = skip_interval,
+                          skip_interval = skip_interval, print_url = print_url,
                           use_proxy = use_proxy, ...)
 
   if(join_lookup == FALSE) { return(ots_data) } else {
@@ -171,6 +180,7 @@ load_ots <- function(month = NULL,
                                     request = request,
                                     timer = timer,
                                     skip_interval = skip_interval,
+                                    print_url = FALSE,
                                     use_proxy = use_proxy, ...)
 
     # Remove potential odata column:
@@ -195,6 +205,7 @@ load_ots <- function(month = NULL,
                                request = request,
                                timer = timer,
                                skip_interval = skip_interval,
+                               print_url = FALSE,
                                use_proxy = use_proxy, ...)
 
     # Remove potential odata column:
@@ -220,6 +231,7 @@ load_ots <- function(month = NULL,
                                request = request,
                                timer = timer,
                                skip_interval = skip_interval,
+                               print_url = FALSE,
                                use_proxy = use_proxy, ...)
 
     # Remove potential odata column:
@@ -245,6 +257,7 @@ load_ots <- function(month = NULL,
                                request = request,
                                timer = timer,
                                skip_interval = skip_interval,
+                               print_url = FALSE,
                                use_proxy = use_proxy, ...)
 
     # Remove potential odata column:

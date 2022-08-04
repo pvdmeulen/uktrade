@@ -14,6 +14,7 @@ load_ots(
   uk_port = NULL,
   suppression = NULL,
   join_lookup = TRUE,
+  print_url = FALSE,
   output = "tibble",
   skip_interval = 40000,
   use_proxy = FALSE,
@@ -25,9 +26,9 @@ load_ots(
 
 \item{flow}{The trade flow to be loaded. Takes one ore more integers (1, 2, 3, and/or 4), where 1 is EU imports, 2 is EU exports, 3 is non-EU imports, and 4 is non-EU exports. Defaults to NULL (all flows).}
 
-\item{commodity}{One or more HS2, HS4, HS6, or CN8 commodity codes in the form of a numeric vector. Defaults to NULL (all commodities).}
+\item{commodity}{One or more HS2, HS4, HS6, or CN8 commodity codes in the form of a numeric or character vector. Defaults to NULL (all commodities). Any missing leading zeros will be automatically added.}
 
-\item{sitc}{One or more SITC1, SITC2, SITC4, or SITC5 commodity codes in the form of a numeric vector. Defaults to NULL (all commodities).}
+\item{sitc}{One or more SITC1, SITC2, SITC3, SITC4, or SITC5 commodity codes in the form of a character vector. Defaults to NULL (all commodities).}
 
 \item{country}{One or more destination or origin countries by their 2-letter ISO code. Defaults to NULL (all countries).}
 
@@ -38,6 +39,8 @@ load_ots(
 \item{suppression}{One or more suppression codes. Takes one or more integers between 1 and 5 (see HMRC API guidance for information). Defaults to NULL (all available results).}
 
 \item{join_lookup}{A logical value indicating whether results should be joined with lookups from the API. Defaults to TRUE. Setting to FALSE will return a smaller but less human-readable dataframe containing only codes.}
+
+\item{print_url}{A logical. Defaults to FALSE. Setting this to TRUE will print the URL(s) used to load the trade data to the console.}
 
 \item{output}{A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".}
 

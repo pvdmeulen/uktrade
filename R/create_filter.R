@@ -22,27 +22,27 @@ create_filter <- function(list){
 
     templist["Full HS246 Codes"] <-
       paste0("(",
-      paste0(
-        name,
-        " ge ",
-        stringr::str_pad(
-          element[stringr::str_length(element) %in% c(2, 4, 6)],
-          pad = 0,
-          side = "right",
-          width = 8
-        ),
-        " and ",
-        name,
-        " le ",
-        stringr::str_pad(
-          element[stringr::str_length(element) %in% c(2, 4, 6)],
-          pad = 9,
-          side = "right",
-          width = 8
-        ),
-        collapse = " or "
-        ),
-        ")"
+             paste0(
+               name,
+               " ge ",
+               stringr::str_pad(
+                 element[stringr::str_length(element) %in% c(2, 4, 6)],
+                 pad = 0,
+                 side = "right",
+                 width = 8
+               ),
+               " and ",
+               name,
+               " le ",
+               stringr::str_pad(
+                 element[stringr::str_length(element) %in% c(2, 4, 6)],
+                 pad = 9,
+                 side = "right",
+                 width = 8
+               ),
+               collapse = " or "
+             ),
+             ")"
       )
 
     # If HS2, HS4, HS6 codes are partial (w/o leading zeros), pad them to be
@@ -51,27 +51,27 @@ create_filter <- function(list){
 
     templist["Partial HS246 Codes"] <-
       paste0("(",
-      paste0(
-        name,
-        " ge ",
-        stringr::str_pad(
-          element[stringr::str_length(element) %in% c(1, 3, 5)],
-          pad = 0,
-          side = "right",
-          width = 7
-        ),
-        " and ",
-        name,
-        " le ",
-        stringr::str_pad(
-          element[stringr::str_length(element) %in% c(1, 3, 5)],
-          pad = 9,
-          side = "right",
-          width = 7
-        ),
-        collapse = " or "
-      ),
-      ")"
+             paste0(
+               name,
+               " ge ",
+               stringr::str_pad(
+                 element[stringr::str_length(element) %in% c(1, 3, 5)],
+                 pad = 0,
+                 side = "right",
+                 width = 7
+               ),
+               " and ",
+               name,
+               " le ",
+               stringr::str_pad(
+                 element[stringr::str_length(element) %in% c(1, 3, 5)],
+                 pad = 9,
+                 side = "right",
+                 width = 7
+               ),
+               collapse = " or "
+             ),
+             ")"
       )
 
     # If there are CN8 codes, create a simple 'equal to ........ or equal
@@ -80,13 +80,63 @@ create_filter <- function(list){
     templist["CN8 Codes"] <-
       paste0("(", paste0(name, " eq ", element[
         stringr::str_length(element) %in% c(7, 8)
-        ], collapse = " or "), ")")
+      ], collapse = " or "), ")")
 
-    # Combine these types into one string:
+    # Combine these commodity codes into one string:
 
     list[paste0(name)] <-
-      paste0(templist[stringr::str_detect(templist, "[0-9]")],
-             collapse = " or ")
+      paste0("(", paste0(templist[stringr::str_detect(templist, "[0-9]")],
+                         collapse = " or "), ")")
+
+    remove(templist)
+
+    # Do the same for SITC codes chosen in load_ots() function:
+
+  } else if (name == "CommoditySitcId") {
+
+    # Assume 4-digit or smaller SITC codes are full (w/ leading zeros), since
+    # single-digit and odd SITC codes also exist. Pad them to be 5 characters
+    # long and combine with a 'greater than or equal to and less than or equal
+    # to ...9999' type filter:
+
+    templist["SITC1234 Codes"] <-
+      paste0("(",
+             paste0(
+               name,
+               " ge ",
+               stringr::str_pad(
+                 element[stringr::str_length(element) %in% 1:4],
+                 pad = 0,
+                 side = "right",
+                 width = 5
+               ),
+               " and ",
+               name,
+               " le ",
+               stringr::str_pad(
+                 element[stringr::str_length(element) %in% 1:4],
+                 pad = 9,
+                 side = "right",
+                 width = 5
+               ),
+               collapse = " or "
+             ),
+             ")"
+      )
+
+    # If there are any SITC5 codes, create a simple 'equal to ........ or equal
+    # to ........' type filter:
+
+    templist["SITC5 Codes"] <-
+      paste0("(", paste0(name, " eq ", element[
+        stringr::str_length(element) %in% 5
+      ], collapse = " or "), ")")
+
+    # Combine these commodity codes into one string:
+
+    list[paste0(name)] <-
+      paste0("(", paste0(templist[stringr::str_detect(templist, "[0-9]")],
+                         collapse = " or "), ")")
 
     remove(templist)
 

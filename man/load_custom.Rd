@@ -12,6 +12,7 @@ load_custom(
   skip_interval = 40000,
   timer = NULL,
   output = "tibble",
+  print_url = FALSE,
   debug = FALSE,
   use_proxy = FALSE,
   ...
@@ -31,6 +32,8 @@ load_custom(
 \item{timer}{A non-negative integer value (seconds) to keep track of the time taken so far. Defaults to NULL. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).}
 
 \item{output}{A character specifying if a tibble ("tibble") or dataframe ("df") should be returned. Defaults to "tibble".}
+
+\item{print_url}{A logical. Defaults to FALSE. Setting this to TRUE will print the URL(s) used to load data to the console.}
 
 \item{debug}{A logical. Defaults to FALSE. Setting this to TRUE will print the number of datasets as they are being loaded as well as the elapsed time.}
 
