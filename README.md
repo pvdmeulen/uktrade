@@ -23,7 +23,7 @@ devtools::install_github("pvdmeulen/uktrade")
 
 ## HMRC data
 
-Her Majesty’s Revenue & Customs (HMRC) is the :uk: UK’s customs
+Her Majesty’s Revenue & Customs (HMRC) is the United Kingdom’s customs
 authority. Data on UK trade is available on their
 [uktradeinfo.com](https://www.uktradeinfo.com/) website, which is
 collected through a combination of customs declarations and Intrastat
@@ -179,9 +179,9 @@ data
 #> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
-Similarly, specifying `commodity = NULL` will load all commodities (this
-may take considerable time). For example, we can load all exports to
-Australia in January 2019:
+Specifying `commodity = NULL` and `SITC = NULL` will load all
+commodities (this may take considerable time). For example, we can load
+all exports to Australia in January 2019:
 
 ``` r
 data <- load_ots(month = 201901, country = "AU", flow = 4, commodity = NULL, join_lookup = TRUE)
@@ -211,8 +211,8 @@ data
 #> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
-Alternatively, we can use SITC codes - here, we load all live beverages
-(SITC2 code 11):
+We can also use SITC codes - here, we load all beverage (SITC2 code 11)
+exports to Australia in January 2019:
 
 ``` r
 data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = "11", join_lookup = TRUE)
@@ -241,10 +241,10 @@ data
 #> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
-Note that these need to be in character format, and include any leading
-zeros. This is because, unlike HS or CN codes, odd SITC codes exist
-(e.g. SITC1). We can also select a selection of codes in a similar way
-to HS/CN codes:
+Note that SITC codes need to be in character format, and include any
+leading zeros. This is because, unlike HS or CN codes, odd SITC codes
+exist (e.g. SITC1). We can also select a selection of codes in a similar
+way to HS/CN codes:
 
 ``` r
 data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = c("0", "11", "2",
