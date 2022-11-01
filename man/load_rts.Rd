@@ -6,7 +6,7 @@
 \usage{
 load_rts(
   month = NULL,
-  flow = c(1, 2, 3, 4),
+  flow = NULL,
   sitc = NULL,
   country = NULL,
   region = NULL,

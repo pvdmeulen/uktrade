@@ -95,13 +95,13 @@ data
 When loading an HS2 code, or a SITC1 or SITC2 code, so-called Below Threshold Trade Allocation estimates are also loaded (for EU trade). These are, roughly, estimated values for those trades which fell below the Intrastat Survey threshold. At more detailed commodity levels, these estimates are excluded. BTTA trade estimates have different commodity codes (9-digit CN codes ending in 9999999, or 7-digit SITC codes ending in 99999):
 
 ```{r load_ots example with BTTA}
-data <- load_ots(month = c(201901, 201912), commodity = 22, join_lookup = TRUE, print_url = TRUE)
+data <- load_ots(month = c(202101, 202103), commodity = "03", join_lookup = TRUE, print_url = TRUE)
 
 library(dplyr)
 library(stringr)
 
-data %>%
-  filter(str_detect(Hs4Code, "-"))
+data %>% 
+  filter(stringr::str_detect(Sitc4Code, "-"))
 ```
 
 Specifying `commodity = NULL` and `SITC = NULL` will load all commodities (this may take considerable time). This will also include so-called non-response estimates, which have negative commodity codes (and currently cannot be split by e.g. SITC2 or HS2). For example, we can load all exports to Australia in January 2019:

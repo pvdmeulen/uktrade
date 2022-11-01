@@ -106,7 +106,6 @@ data
 #> # ... with 4,653 more rows, and abbreviated variable names 1: FlowTypeId,
 #> #   2: SuppressionIndex, 3: CommodityId, 4: CommoditySitcId, 5: CountryId,
 #> #   6: SuppUnit
-#> # i Use `print(n = ...)` to see more rows
 ```
 
 Note that the `month` argument specifies a range in the form of
@@ -145,7 +144,6 @@ data
 #> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
 #> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
 #> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
-#> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
 Loading aggregate data (such as all spirits, HS4 code 2208) is possible
@@ -157,7 +155,7 @@ what URL the code is using by specifying `print_URL = TRUE`:
 data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE,
     print_url = TRUE)
 #> Loading data via the following URL(s):
-#> URL 1: https://api.uktradeinfo.com/OTS?$filter=(FlowTypeId eq 1 or FlowTypeId eq 2 or FlowTypeId eq 3 or FlowTypeId eq 4) and (MonthId ge 201901 and MonthId le 201912) and ((CommodityId ge 22080000 and CommodityId le 22089999))
+#> URL 1: https://api.uktradeinfo.com/OTS?$filter=(MonthId ge 201901 and MonthId le 201912) and ((CommodityId ge 22080000 and CommodityId le 22089999))
 
 data
 #> # A tibble: 23,466 x 39
@@ -180,7 +178,6 @@ data
 #> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
 #> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
 #> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
-#> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
 When loading an HS2 code, or a SITC1 or SITC2 code, so-called Below
@@ -192,10 +189,10 @@ codes (9-digit CN codes ending in 9999999, or 7-digit SITC codes ending
 in 99999):
 
 ``` r
-data <- load_ots(month = c(201901, 201912), commodity = 22, join_lookup = TRUE, print_url = TRUE)
+data <- load_ots(month = c(202101, 202103), commodity = "03", join_lookup = TRUE,
+    print_url = TRUE)
 #> Loading data via the following URL(s):
-#> URL 1: https://api.uktradeinfo.com/OTS?$filter=(FlowTypeId eq 1 or FlowTypeId eq 2 or FlowTypeId eq 3 or FlowTypeId eq 4) and (MonthId ge 201901 and MonthId le 201912) and ((CommodityId ge 22000000 and CommodityId le 22999999) or CommodityId eq 229999999)
-#> URL 2: https://api.uktradeinfo.com/OTS?$filter=(FlowTypeId eq 1 or FlowTypeId eq 2 or FlowTypeId eq 3 or FlowTypeId eq 4) and (MonthId ge 201901 and MonthId le 201912) and ((CommodityId ge 22000000 and CommodityId le 22999999) or CommodityId eq 229999999)&$skip=40000
+#> URL 1: https://api.uktradeinfo.com/OTS?$filter=(MonthId ge 202101 and MonthId le 202103) and ((CommodityId ge 03000000 and CommodityId le 03999999) or CommodityId eq 039999999)
 
 library(dplyr)
 #> 
@@ -209,16 +206,27 @@ library(dplyr)
 library(stringr)
 
 data %>%
-    filter(str_detect(Hs4Code, "-"))
-#> # A tibble: 0 x 39
-#> # ... with 39 variables: MonthId <int>, FlowTypeId <int>,
-#> #   FlowTypeDescription <chr>, SuppressionIndex <dbl>, SuppressionDesc <chr>,
-#> #   Hs2Code <chr>, Hs2Description <chr>, Hs4Code <chr>, Hs4Description <chr>,
-#> #   Hs6Code <chr>, Hs6Description <chr>, Cn8Code <chr>,
-#> #   Cn8LongDescription <chr>, Sitc1Code <chr>, Sitc1Desc <chr>,
-#> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
-#> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, ...
-#> # i Use `colnames()` to see all variable names
+    filter(stringr::str_detect(Sitc4Code, "-"))
+#> # A tibble: 54 x 39
+#>    MonthId FlowTypeId FlowType~1 Suppr~2 Suppr~3 Hs2Code Hs2De~4 Hs4Code Hs4De~5
+#>      <int>      <int> <chr>        <dbl> <chr>   <chr>   <chr>   <chr>   <chr>  
+#>  1  202101          1 "EU Impor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#>  2  202101          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#>  3  202102          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#>  4  202103          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#>  5  202101          1 "EU Impor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#>  6  202102          1 "EU Impor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#>  7  202103          1 "EU Impor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#>  8  202101          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#>  9  202102          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#> 10  202103          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
+#> # ... with 44 more rows, 30 more variables: Hs6Code <chr>,
+#> #   Hs6Description <chr>, Cn8Code <chr>, Cn8LongDescription <chr>,
+#> #   Sitc1Code <chr>, Sitc1Desc <chr>, Sitc2Code <chr>, Sitc2Desc <chr>,
+#> #   Sitc3Code <chr>, Sitc3Desc <chr>, Sitc4Code <chr>, Sitc4Desc <chr>,
+#> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
+#> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
+#> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
 ```
 
 Specifying `commodity = NULL` and `SITC = NULL` will load all
@@ -252,7 +260,6 @@ data
 #> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
 #> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
 #> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
-#> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
 We can also use SITC codes - here, we load all beverage (SITC2 code 11)
@@ -282,7 +289,6 @@ data
 #> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
 #> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
 #> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
-#> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
 Note that SITC codes need to be in character format, and include any
@@ -314,7 +320,6 @@ data
 #> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
 #> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
 #> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
-#> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
 ### RTS
@@ -349,7 +354,6 @@ data
 #> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>,
 #> #   Value <dbl>, NetMass <dbl>, and abbreviated variable names
 #> #   1: FlowTypeDescription, 2: Sitc1Code, 3: Sitc1Desc, ...
-#> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
 Note: where relevant, BTTA data is [included in RTS
@@ -384,7 +388,6 @@ data
 #> # ... with 2 more variables: Cn8LongDescription <chr>, Exports <list>, and
 #> #   abbreviated variable names 1: Hs2Description, 2: Hs4Description,
 #> #   3: Hs6Description, 4: SitcCommodityCode
-#> # i Use `colnames()` to see all variable names
 ```
 
 Note that the variables expanded in the API query, Exports and Trader,
@@ -415,7 +418,6 @@ tidyr::unnest(data, Exports, names_repair = "unique")
 #> #   TraderId <int>, CommodityId...12 <int>, MonthId <int>, Trader <df[,8]>, and
 #> #   abbreviated variable names 1: CommodityId...1, 2: Hs2Description,
 #> #   3: Hs4Description, 4: Hs6Description, 5: SitcCommodityCode
-#> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
 ## MIT License
