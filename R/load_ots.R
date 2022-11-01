@@ -43,7 +43,7 @@
 # Function:
 
 load_ots <- function(month = NULL,
-                     flow = c(1, 2, 3, 4),
+                     flow = NULL,
                      commodity = NULL,
                      sitc = NULL,
                      country = NULL,

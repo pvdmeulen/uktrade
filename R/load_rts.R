@@ -43,7 +43,7 @@
 # Function:
 
 load_rts <- function(month = NULL,
-                     flow = c(1, 2, 3, 4),
+                     flow = NULL,
                      sitc = NULL,
                      country = NULL,
                      region = NULL,
