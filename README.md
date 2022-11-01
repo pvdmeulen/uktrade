@@ -150,10 +150,14 @@ data
 
 Loading aggregate data (such as all spirits, HS4 code 2208) is possible
 too (in the background, this is loading commodity codes greater than or
-equal to 22080000 and less than or equal to 22089999):
+equal to 22080000 and less than or equal to 22089999). You can also see
+what URL the code is using by specifying `print_URL = TRUE`:
 
 ``` r
-data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE)
+data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE,
+    print_url = TRUE)
+#> Loading data via the following URL(s):
+#> URL 1: https://api.uktradeinfo.com/OTS?$filter=(FlowTypeId eq 1 or FlowTypeId eq 2 or FlowTypeId eq 3 or FlowTypeId eq 4) and (MonthId ge 201901 and MonthId le 201912) and ((CommodityId ge 22080000 and CommodityId le 22089999))
 
 data
 #> # A tibble: 23,466 x 39
@@ -179,9 +183,49 @@ data
 #> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
 
+When loading an HS2 code, or a SITC1 or SITC2 code, so-called Below
+Threshold Trade Allocation estimates are also loaded (for EU trade).
+These are, roughly, estimated values for those trades which fell below
+the Intrastat Survey threshold. At more detailed commodity levels, these
+estimates are excluded. BTTA trade estimates have different commodity
+codes (9-digit CN codes ending in 9999999, or 7-digit SITC codes ending
+in 99999):
+
+``` r
+data <- load_ots(month = c(201901, 201912), commodity = 22, join_lookup = TRUE, print_url = TRUE)
+#> Loading data via the following URL(s):
+#> URL 1: https://api.uktradeinfo.com/OTS?$filter=(FlowTypeId eq 1 or FlowTypeId eq 2 or FlowTypeId eq 3 or FlowTypeId eq 4) and (MonthId ge 201901 and MonthId le 201912) and ((CommodityId ge 22000000 and CommodityId le 22999999) or CommodityId eq 229999999)
+#> URL 2: https://api.uktradeinfo.com/OTS?$filter=(FlowTypeId eq 1 or FlowTypeId eq 2 or FlowTypeId eq 3 or FlowTypeId eq 4) and (MonthId ge 201901 and MonthId le 201912) and ((CommodityId ge 22000000 and CommodityId le 22999999) or CommodityId eq 229999999)&$skip=40000
+
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(stringr)
+
+data %>%
+    filter(str_detect(Hs4Code, "-"))
+#> # A tibble: 0 x 39
+#> # ... with 39 variables: MonthId <int>, FlowTypeId <int>,
+#> #   FlowTypeDescription <chr>, SuppressionIndex <dbl>, SuppressionDesc <chr>,
+#> #   Hs2Code <chr>, Hs2Description <chr>, Hs4Code <chr>, Hs4Description <chr>,
+#> #   Hs6Code <chr>, Hs6Description <chr>, Cn8Code <chr>,
+#> #   Cn8LongDescription <chr>, Sitc1Code <chr>, Sitc1Desc <chr>,
+#> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
+#> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, ...
+#> # i Use `colnames()` to see all variable names
+```
+
 Specifying `commodity = NULL` and `SITC = NULL` will load all
-commodities (this may take considerable time). For example, we can load
-all exports to Australia in January 2019:
+commodities (this may take considerable time). This will also include
+so-called non-response estimates, which have negative commodity codes
+(and currently cannot be split by e.g. SITC2 or HS2). For example, we
+can load all exports to Australia in January 2019:
 
 ``` r
 data <- load_ots(month = 201901, country = "AU", flow = 4, commodity = NULL, join_lookup = TRUE)
@@ -247,24 +291,23 @@ exist (e.g. SITC1). We can also select a selection of codes in a similar
 way to HS/CN codes:
 
 ``` r
-data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = c("0", "11", "2",
-    "71"), join_lookup = TRUE)
+data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = c("0", "11"), join_lookup = TRUE)
 
 data
-#> # A tibble: 461 x 39
+#> # A tibble: 317 x 39
 #>    MonthId FlowTypeId FlowType~1 Suppr~2 Suppr~3 Hs2Code Hs2De~4 Hs4Code Hs4De~5
 #>      <int>      <int> <chr>        <dbl> <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1  201901          4 "Non-EU E~       0 <NA>    25      Salt; ~ <NA>    <NA>   
+#>  1  201901          4 "Non-EU E~       0 <NA>    01      Live a~ 0101    Live h~
 #>  2  201901          4 "Non-EU E~       0 <NA>    01      Live a~ 0101    Live h~
-#>  3  201901          4 "Non-EU E~       0 <NA>    01      Live a~ 0101    Live h~
+#>  3  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0203    Meat o~
 #>  4  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0203    Meat o~
 #>  5  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0203    Meat o~
 #>  6  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0203    Meat o~
-#>  7  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0203    Meat o~
-#>  8  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0206    Edible~
-#>  9  201901          4 "Non-EU E~       0 <NA>    03      Fish a~ 0304    Fish f~
-#> 10  201901          4 "Non-EU E~       0 <NA>    03      Fish a~ 0305    Fish, ~
-#> # ... with 451 more rows, 30 more variables: Hs6Code <chr>,
+#>  7  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0206    Edible~
+#>  8  201901          4 "Non-EU E~       0 <NA>    03      Fish a~ 0304    Fish f~
+#>  9  201901          4 "Non-EU E~       0 <NA>    03      Fish a~ 0305    Fish, ~
+#> 10  201901          4 "Non-EU E~       0 <NA>    04      Dairy ~ 0402    Milk a~
+#> # ... with 307 more rows, 30 more variables: Hs6Code <chr>,
 #> #   Hs6Description <chr>, Cn8Code <chr>, Cn8LongDescription <chr>,
 #> #   Sitc1Code <chr>, Sitc1Desc <chr>, Sitc2Code <chr>, Sitc2Desc <chr>,
 #> #   Sitc3Code <chr>, Sitc3Desc <chr>, Sitc4Code <chr>, Sitc4Desc <chr>,
@@ -308,6 +351,10 @@ data
 #> #   1: FlowTypeDescription, 2: Sitc1Code, 3: Sitc1Desc, ...
 #> # i Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
 ```
+
+Note: where relevant, BTTA data is [included in RTS
+data](https://www.gov.uk/government/statistics/overseas-trade-statistics-methodologies/regional-trade-in-goods-statistics-methodology)
+as well.
 
 ## Example using trader data
 

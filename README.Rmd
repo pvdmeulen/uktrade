@@ -84,15 +84,27 @@ data <- load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011), j
 data
 ```
 
-Loading aggregate data (such as all spirits, HS4 code 2208) is possible too (in the background, this is loading commodity codes greater than or equal to 22080000 and less than or equal to 22089999):
+Loading aggregate data (such as all spirits, HS4 code 2208) is possible too (in the background, this is loading commodity codes greater than or equal to 22080000 and less than or equal to 22089999). You can also see what URL the code is using by specifying `print_URL = TRUE`:
 
 ```{r load_ots example with join and HS4}
-data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE)
+data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE, print_url = TRUE)
 
 data
 ```
 
-Specifying `commodity = NULL` and `SITC = NULL` will load all commodities (this may take considerable time). For example, we can load all exports to Australia in January 2019:
+When loading an HS2 code, or a SITC1 or SITC2 code, so-called Below Threshold Trade Allocation estimates are also loaded (for EU trade). These are, roughly, estimated values for those trades which fell below the Intrastat Survey threshold. At more detailed commodity levels, these estimates are excluded. BTTA trade estimates have different commodity codes (9-digit CN codes ending in 9999999, or 7-digit SITC codes ending in 99999):
+
+```{r load_ots example with BTTA}
+data <- load_ots(month = c(201901, 201912), commodity = 22, join_lookup = TRUE, print_url = TRUE)
+
+library(dplyr)
+library(stringr)
+
+data %>%
+  filter(str_detect(Hs4Code, "-"))
+```
+
+Specifying `commodity = NULL` and `SITC = NULL` will load all commodities (this may take considerable time). This will also include so-called non-response estimates, which have negative commodity codes (and currently cannot be split by e.g. SITC2 or HS2). For example, we can load all exports to Australia in January 2019:
 
 ```{r load_ots example with join and all commodities}
 data <- load_ots(month = 201901, country = "AU", flow = 4, commodity = NULL, join_lookup = TRUE)
@@ -111,7 +123,7 @@ data
 Note that SITC codes need to be in character format, and include any leading zeros. This is because, unlike HS or CN codes, odd SITC codes exist (e.g. SITC1). We can also select a selection of codes in a similar way to HS/CN codes:
 
 ```{r load_ots example with join and sitc commodities 2}
-data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = c("0", "11", "2", "71"), join_lookup = TRUE)
+data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = c("0", "11"), join_lookup = TRUE)
 
 data
 ```
@@ -125,6 +137,8 @@ data <- load_rts(month = c(201901, 201912), sitc = c(00, 11), join_lookup = TRUE
 
 data
 ```
+
+Note: where relevant, BTTA data is [included in RTS data](https://www.gov.uk/government/statistics/overseas-trade-statistics-methodologies/regional-trade-in-goods-statistics-methodology) as well.
 
 ## Example using trader data
 
