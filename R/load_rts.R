@@ -225,9 +225,9 @@ load_rts <- function(month = NULL,
       dplyr::left_join(ukcountry_lookup, by = "GovRegionId") %>%
       # Put data in an order that makes more sense:
       dplyr::select(
-        .data$MonthId,
-        .data$FlowTypeId,
-        .data$FlowTypeDescription,
+        dplyr::contains("MonthId"),
+        dplyr::contains("FlowTypeId"),
+        dplyr::contains("FlowTypeDescription"),
         dplyr::contains("Sitc1"),
         dplyr::contains("Sitc2"),
         dplyr::contains("GovRegion"),
@@ -235,12 +235,12 @@ load_rts <- function(month = NULL,
         dplyr::contains("Area2"),
         dplyr::contains("Area3"),
         dplyr::contains("Area5a"),
-        .data$CountryId,
-        .data$CountryCodeNumeric,
-        .data$CountryCodeAlpha,
-        .data$CountryName,
-        .data$Value,
-        .data$NetMass
+        dplyr::contains("CountryId"),
+        dplyr::contains("CountryCodeNumeric"),
+        dplyr::contains("CountryCodeAlpha"),
+        dplyr::contains("CountryName"),
+        dplyr::contains("Value"),
+        dplyr::contains("NetMass")
       )
 
     rts_data <- if(output == "df") {
