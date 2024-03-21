@@ -85,27 +85,25 @@ and bottled gin (22085011) for 2019 is done like so:
 
 ``` r
 library(uktrade)
-data <- load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011), join_lookup = FALSE,
-    output = "tibble")
+data <- load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011), join_lookup = FALSE, output = "tibble")
 
-# Results are now in a tibble (set output to 'df' to obtain a dataframe):
+# Results are now in a tibble (set output to "df" to obtain a dataframe):
 data
-#> # A tibble: 4,663 x 10
-#>    MonthId FlowT~1 Suppr~2 Commo~3 Commo~4 Count~5 PortId  Value NetMass SuppU~6
-#>      <int>   <int>   <int>   <int>   <int>   <int>  <int>  <dbl>   <dbl>   <dbl>
-#>  1  201901       1       0  2.21e7   11241       1      0  58499    2329    1002
-#>  2  201902       1       0  2.21e7   11241       1      0  58521    1524     659
-#>  3  201903       1       0  2.21e7   11241       1      0 113601    3760    1677
-#>  4  201904       1       0  2.21e7   11241       1      0 136492    4694    2135
-#>  5  201905       1       0  2.21e7   11241       1      0  55862    2826    1228
-#>  6  201906       1       0  2.21e7   11241       1      0  61902    3488    1569
-#>  7  201907       1       0  2.21e7   11241       1      0 111261   11579    2723
-#>  8  201908       1       0  2.21e7   11241       1      0 135419    4335    1972
-#>  9  201909       1       0  2.21e7   11241       1      0 138810    9528    2948
-#> 10  201910       1       0  2.21e7   11241       1      0 141740    5562    2445
-#> # ... with 4,653 more rows, and abbreviated variable names 1: FlowTypeId,
-#> #   2: SuppressionIndex, 3: CommodityId, 4: CommoditySitcId, 5: CountryId,
-#> #   6: SuppUnit
+#> # A tibble: 4,663 × 10
+#>    MonthId FlowTypeId SuppressionIndex CommodityId CommoditySitcId CountryId
+#>      <int>      <int>            <int>       <int>           <int>     <int>
+#>  1  201901          1                0    22083030           11241         1
+#>  2  201902          1                0    22083030           11241         1
+#>  3  201903          1                0    22083030           11241         1
+#>  4  201904          1                0    22083030           11241         1
+#>  5  201905          1                0    22083030           11241         1
+#>  6  201906          1                0    22083030           11241         1
+#>  7  201907          1                0    22083030           11241         1
+#>  8  201908          1                0    22083030           11241         1
+#>  9  201909          1                0    22083030           11241         1
+#> 10  201910          1                0    22083030           11241         1
+#> # ℹ 4,653 more rows
+#> # ℹ 4 more variables: PortId <int>, Value <dbl>, NetMass <dbl>, SuppUnit <dbl>
 ```
 
 Note that the `month` argument specifies a range in the form of
@@ -124,26 +122,26 @@ commodity_lookup <- load_custom(endpoint = "Commodity")
 data <- load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011), join_lookup = TRUE)
 
 data
-#> # A tibble: 4,663 x 39
-#>    MonthId FlowTypeId FlowType~1 Suppr~2 Suppr~3 Hs2Code Hs2De~4 Hs4Code Hs4De~5
-#>      <int>      <int> <chr>        <dbl> <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1  201901          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  2  201902          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  3  201903          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  4  201904          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  5  201905          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  6  201906          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  7  201907          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  8  201908          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  9  201909          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#> 10  201910          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#> # ... with 4,653 more rows, 30 more variables: Hs6Code <chr>,
-#> #   Hs6Description <chr>, Cn8Code <chr>, Cn8LongDescription <chr>,
-#> #   Sitc1Code <chr>, Sitc1Desc <chr>, Sitc2Code <chr>, Sitc2Desc <chr>,
-#> #   Sitc3Code <chr>, Sitc3Desc <chr>, Sitc4Code <chr>, Sitc4Desc <chr>,
-#> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
-#> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
-#> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
+#> # A tibble: 4,663 × 39
+#>    MonthId FlowTypeId FlowTypeDescription       SuppressionIndex SuppressionDesc
+#>      <int>      <int> <chr>                                <dbl> <chr>          
+#>  1  201901          1 "EU Imports             …                0 <NA>           
+#>  2  201902          1 "EU Imports             …                0 <NA>           
+#>  3  201903          1 "EU Imports             …                0 <NA>           
+#>  4  201904          1 "EU Imports             …                0 <NA>           
+#>  5  201905          1 "EU Imports             …                0 <NA>           
+#>  6  201906          1 "EU Imports             …                0 <NA>           
+#>  7  201907          1 "EU Imports             …                0 <NA>           
+#>  8  201908          1 "EU Imports             …                0 <NA>           
+#>  9  201909          1 "EU Imports             …                0 <NA>           
+#> 10  201910          1 "EU Imports             …                0 <NA>           
+#> # ℹ 4,653 more rows
+#> # ℹ 34 more variables: Hs2Code <chr>, Hs2Description <chr>, Hs4Code <chr>,
+#> #   Hs4Description <chr>, Hs6Code <chr>, Hs6Description <chr>, Cn8Code <chr>,
+#> #   Cn8LongDescription <chr>, Sitc1Code <chr>, Sitc1Desc <chr>,
+#> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
+#> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
+#> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>, …
 ```
 
 Loading aggregate data (such as all spirits, HS4 code 2208) is possible
@@ -152,32 +150,31 @@ equal to 22080000 and less than or equal to 22089999). You can also see
 what URL the code is using by specifying `print_URL = TRUE`:
 
 ``` r
-data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE,
-    print_url = TRUE)
+data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE, print_url = TRUE)
 #> Loading data via the following URL(s):
 #> URL 1: https://api.uktradeinfo.com/OTS?$filter=(MonthId ge 201901 and MonthId le 201912) and ((CommodityId ge 22080000 and CommodityId le 22089999))
 
 data
-#> # A tibble: 23,466 x 39
-#>    MonthId FlowTypeId FlowType~1 Suppr~2 Suppr~3 Hs2Code Hs2De~4 Hs4Code Hs4De~5
-#>      <int>      <int> <chr>        <dbl> <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1  201901          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  2  201902          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  3  201903          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  4  201904          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  5  201905          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  6  201906          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  7  201907          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  8  201908          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#>  9  201909          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#> 10  201910          1 "EU Impor~       0 <NA>    22      Bevera~ 2208    Undena~
-#> # ... with 23,456 more rows, 30 more variables: Hs6Code <chr>,
-#> #   Hs6Description <chr>, Cn8Code <chr>, Cn8LongDescription <chr>,
-#> #   Sitc1Code <chr>, Sitc1Desc <chr>, Sitc2Code <chr>, Sitc2Desc <chr>,
-#> #   Sitc3Code <chr>, Sitc3Desc <chr>, Sitc4Code <chr>, Sitc4Desc <chr>,
-#> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
-#> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
-#> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
+#> # A tibble: 23,466 × 39
+#>    MonthId FlowTypeId FlowTypeDescription       SuppressionIndex SuppressionDesc
+#>      <int>      <int> <chr>                                <dbl> <chr>          
+#>  1  201901          1 "EU Imports             …                0 <NA>           
+#>  2  201902          1 "EU Imports             …                0 <NA>           
+#>  3  201903          1 "EU Imports             …                0 <NA>           
+#>  4  201904          1 "EU Imports             …                0 <NA>           
+#>  5  201905          1 "EU Imports             …                0 <NA>           
+#>  6  201906          1 "EU Imports             …                0 <NA>           
+#>  7  201907          1 "EU Imports             …                0 <NA>           
+#>  8  201908          1 "EU Imports             …                0 <NA>           
+#>  9  201909          1 "EU Imports             …                0 <NA>           
+#> 10  201910          1 "EU Imports             …                0 <NA>           
+#> # ℹ 23,456 more rows
+#> # ℹ 34 more variables: Hs2Code <chr>, Hs2Description <chr>, Hs4Code <chr>,
+#> #   Hs4Description <chr>, Hs6Code <chr>, Hs6Description <chr>, Cn8Code <chr>,
+#> #   Cn8LongDescription <chr>, Sitc1Code <chr>, Sitc1Desc <chr>,
+#> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
+#> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
+#> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>, …
 ```
 
 When loading an HS2 code, or a SITC1 or SITC2 code, so-called Below
@@ -189,8 +186,7 @@ codes (9-digit CN codes ending in 9999999, or 7-digit SITC codes ending
 in 99999):
 
 ``` r
-data <- load_ots(month = c(202101, 202103), commodity = "03", join_lookup = TRUE,
-    print_url = TRUE)
+data <- load_ots(month = c(202101, 202103), commodity = "03", join_lookup = TRUE, print_url = TRUE)
 #> Loading data via the following URL(s):
 #> URL 1: https://api.uktradeinfo.com/OTS?$filter=(MonthId ge 202101 and MonthId le 202103) and ((CommodityId ge 03000000 and CommodityId le 03999999) or CommodityId eq 039999999)
 
@@ -205,28 +201,28 @@ library(dplyr)
 #>     intersect, setdiff, setequal, union
 library(stringr)
 
-data %>%
-    filter(stringr::str_detect(Sitc4Code, "-"))
-#> # A tibble: 54 x 39
-#>    MonthId FlowTypeId FlowType~1 Suppr~2 Suppr~3 Hs2Code Hs2De~4 Hs4Code Hs4De~5
-#>      <int>      <int> <chr>        <dbl> <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1  202101          1 "EU Impor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#>  2  202101          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#>  3  202102          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#>  4  202103          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#>  5  202101          1 "EU Impor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#>  6  202102          1 "EU Impor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#>  7  202103          1 "EU Impor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#>  8  202101          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#>  9  202102          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#> 10  202103          2 "EU Expor~       0 <NA>    <NA>    <NA>    <NA>    <NA>   
-#> # ... with 44 more rows, 30 more variables: Hs6Code <chr>,
-#> #   Hs6Description <chr>, Cn8Code <chr>, Cn8LongDescription <chr>,
-#> #   Sitc1Code <chr>, Sitc1Desc <chr>, Sitc2Code <chr>, Sitc2Desc <chr>,
-#> #   Sitc3Code <chr>, Sitc3Desc <chr>, Sitc4Code <chr>, Sitc4Desc <chr>,
-#> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
-#> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
-#> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
+data %>% 
+  filter(stringr::str_detect(Sitc4Code, "-"))
+#> # A tibble: 54 × 39
+#>    MonthId FlowTypeId FlowTypeDescription       SuppressionIndex SuppressionDesc
+#>      <int>      <int> <chr>                                <dbl> <chr>          
+#>  1  202101          1 "EU Imports             …                0 <NA>           
+#>  2  202101          2 "EU Exports             …                0 <NA>           
+#>  3  202102          2 "EU Exports             …                0 <NA>           
+#>  4  202103          2 "EU Exports             …                0 <NA>           
+#>  5  202101          1 "EU Imports             …                0 <NA>           
+#>  6  202102          1 "EU Imports             …                0 <NA>           
+#>  7  202103          1 "EU Imports             …                0 <NA>           
+#>  8  202101          2 "EU Exports             …                0 <NA>           
+#>  9  202102          2 "EU Exports             …                0 <NA>           
+#> 10  202103          2 "EU Exports             …                0 <NA>           
+#> # ℹ 44 more rows
+#> # ℹ 34 more variables: Hs2Code <chr>, Hs2Description <chr>, Hs4Code <chr>,
+#> #   Hs4Description <chr>, Hs6Code <chr>, Hs6Description <chr>, Cn8Code <chr>,
+#> #   Cn8LongDescription <chr>, Sitc1Code <chr>, Sitc1Desc <chr>,
+#> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
+#> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
+#> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>, …
 ```
 
 Specifying `commodity = NULL` and `SITC = NULL` will load all
@@ -240,26 +236,26 @@ data <- load_ots(month = 201901, country = "AU", flow = 4, commodity = NULL, joi
 #> Loading detailed trade data for all commodities. This may take a while.
 
 data
-#> # A tibble: 4,960 x 39
-#>    MonthId FlowTypeId FlowType~1 Suppr~2 Suppr~3 Hs2Code Hs2De~4 Hs4Code Hs4De~5
-#>      <int>      <int> <chr>        <dbl> <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1  201901          4 "Non-EU E~       0 <NA>    25      Salt; ~ <NA>    <NA>   
-#>  2  201901          4 "Non-EU E~       0 <NA>    28      Inorga~ <NA>    <NA>   
-#>  3  201901          4 "Non-EU E~       0 <NA>    29      Organi~ <NA>    <NA>   
-#>  4  201901          4 "Non-EU E~       0 <NA>    29      Organi~ <NA>    <NA>   
-#>  5  201901          4 "Non-EU E~       0 <NA>    36      Explos~ <NA>    <NA>   
-#>  6  201901          4 "Non-EU E~       0 <NA>    39      Plasti~ <NA>    <NA>   
-#>  7  201901          4 "Non-EU E~       0 <NA>    39      Plasti~ <NA>    <NA>   
-#>  8  201901          4 "Non-EU E~       0 <NA>    39      Plasti~ <NA>    <NA>   
-#>  9  201901          4 "Non-EU E~       0 <NA>    39      Plasti~ <NA>    <NA>   
-#> 10  201901          4 "Non-EU E~       0 <NA>    39      Plasti~ <NA>    <NA>   
-#> # ... with 4,950 more rows, 30 more variables: Hs6Code <chr>,
-#> #   Hs6Description <chr>, Cn8Code <chr>, Cn8LongDescription <chr>,
-#> #   Sitc1Code <chr>, Sitc1Desc <chr>, Sitc2Code <chr>, Sitc2Desc <chr>,
-#> #   Sitc3Code <chr>, Sitc3Desc <chr>, Sitc4Code <chr>, Sitc4Desc <chr>,
-#> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
-#> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
-#> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
+#> # A tibble: 4,960 × 39
+#>    MonthId FlowTypeId FlowTypeDescription       SuppressionIndex SuppressionDesc
+#>      <int>      <int> <chr>                                <dbl> <chr>          
+#>  1  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  2  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  3  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  4  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  5  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  6  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  7  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  8  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  9  201901          4 "Non-EU Exports         …                0 <NA>           
+#> 10  201901          4 "Non-EU Exports         …                0 <NA>           
+#> # ℹ 4,950 more rows
+#> # ℹ 34 more variables: Hs2Code <chr>, Hs2Description <chr>, Hs4Code <chr>,
+#> #   Hs4Description <chr>, Hs6Code <chr>, Hs6Description <chr>, Cn8Code <chr>,
+#> #   Cn8LongDescription <chr>, Sitc1Code <chr>, Sitc1Desc <chr>,
+#> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
+#> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
+#> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>, …
 ```
 
 We can also use SITC codes - here, we load all beverage (SITC2 code 11)
@@ -269,26 +265,26 @@ exports to Australia in January 2019:
 data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = "11", join_lookup = TRUE)
 
 data
-#> # A tibble: 105 x 39
-#>    MonthId FlowTypeId FlowType~1 Suppr~2 Suppr~3 Hs2Code Hs2De~4 Hs4Code Hs4De~5
-#>      <int>      <int> <chr>        <dbl> <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2201    Waters~
-#>  2  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2202    Waters~
-#>  3  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2202    Waters~
-#>  4  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2202    Waters~
-#>  5  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2202    Waters~
-#>  6  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2202    Waters~
-#>  7  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2202    Waters~
-#>  8  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2202    Waters~
-#>  9  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2203    Beer m~
-#> 10  201901          4 "Non-EU E~       0 <NA>    22      Bevera~ 2203    Beer m~
-#> # ... with 95 more rows, 30 more variables: Hs6Code <chr>,
-#> #   Hs6Description <chr>, Cn8Code <chr>, Cn8LongDescription <chr>,
-#> #   Sitc1Code <chr>, Sitc1Desc <chr>, Sitc2Code <chr>, Sitc2Desc <chr>,
-#> #   Sitc3Code <chr>, Sitc3Desc <chr>, Sitc4Code <chr>, Sitc4Desc <chr>,
-#> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
-#> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
-#> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
+#> # A tibble: 105 × 39
+#>    MonthId FlowTypeId FlowTypeDescription       SuppressionIndex SuppressionDesc
+#>      <int>      <int> <chr>                                <dbl> <chr>          
+#>  1  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  2  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  3  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  4  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  5  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  6  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  7  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  8  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  9  201901          4 "Non-EU Exports         …                0 <NA>           
+#> 10  201901          4 "Non-EU Exports         …                0 <NA>           
+#> # ℹ 95 more rows
+#> # ℹ 34 more variables: Hs2Code <chr>, Hs2Description <chr>, Hs4Code <chr>,
+#> #   Hs4Description <chr>, Hs6Code <chr>, Hs6Description <chr>, Cn8Code <chr>,
+#> #   Cn8LongDescription <chr>, Sitc1Code <chr>, Sitc1Desc <chr>,
+#> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
+#> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
+#> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>, …
 ```
 
 Note that SITC codes need to be in character format, and include any
@@ -300,26 +296,26 @@ way to HS/CN codes:
 data <- load_ots(month = 201901, country = "AU", flow = 4, sitc = c("0", "11"), join_lookup = TRUE)
 
 data
-#> # A tibble: 317 x 39
-#>    MonthId FlowTypeId FlowType~1 Suppr~2 Suppr~3 Hs2Code Hs2De~4 Hs4Code Hs4De~5
-#>      <int>      <int> <chr>        <dbl> <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1  201901          4 "Non-EU E~       0 <NA>    01      Live a~ 0101    Live h~
-#>  2  201901          4 "Non-EU E~       0 <NA>    01      Live a~ 0101    Live h~
-#>  3  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0203    Meat o~
-#>  4  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0203    Meat o~
-#>  5  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0203    Meat o~
-#>  6  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0203    Meat o~
-#>  7  201901          4 "Non-EU E~       0 <NA>    02      Meat a~ 0206    Edible~
-#>  8  201901          4 "Non-EU E~       0 <NA>    03      Fish a~ 0304    Fish f~
-#>  9  201901          4 "Non-EU E~       0 <NA>    03      Fish a~ 0305    Fish, ~
-#> 10  201901          4 "Non-EU E~       0 <NA>    04      Dairy ~ 0402    Milk a~
-#> # ... with 307 more rows, 30 more variables: Hs6Code <chr>,
-#> #   Hs6Description <chr>, Cn8Code <chr>, Cn8LongDescription <chr>,
-#> #   Sitc1Code <chr>, Sitc1Desc <chr>, Sitc2Code <chr>, Sitc2Desc <chr>,
-#> #   Sitc3Code <chr>, Sitc3Desc <chr>, Sitc4Code <chr>, Sitc4Desc <chr>,
-#> #   Area1 <chr>, Area1a <chr>, Area2 <chr>, Area2a <chr>, Area3 <chr>,
-#> #   Area3a <chr>, Area5a <chr>, CountryId <int>, CountryCodeNumeric <chr>,
-#> #   CountryCodeAlpha <chr>, CountryName <chr>, PortId <int>, ...
+#> # A tibble: 317 × 39
+#>    MonthId FlowTypeId FlowTypeDescription       SuppressionIndex SuppressionDesc
+#>      <int>      <int> <chr>                                <dbl> <chr>          
+#>  1  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  2  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  3  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  4  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  5  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  6  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  7  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  8  201901          4 "Non-EU Exports         …                0 <NA>           
+#>  9  201901          4 "Non-EU Exports         …                0 <NA>           
+#> 10  201901          4 "Non-EU Exports         …                0 <NA>           
+#> # ℹ 307 more rows
+#> # ℹ 34 more variables: Hs2Code <chr>, Hs2Description <chr>, Hs4Code <chr>,
+#> #   Hs4Description <chr>, Hs6Code <chr>, Hs6Description <chr>, Cn8Code <chr>,
+#> #   Cn8LongDescription <chr>, Sitc1Code <chr>, Sitc1Desc <chr>,
+#> #   Sitc2Code <chr>, Sitc2Desc <chr>, Sitc3Code <chr>, Sitc3Desc <chr>,
+#> #   Sitc4Code <chr>, Sitc4Desc <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
+#> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>, …
 ```
 
 ### RTS
@@ -331,29 +327,29 @@ This again specifies a range, similar to the `month` argument. This is
 done to avoid URLs being too long.
 
 ``` r
-data <- load_rts(month = c(201901, 201912), sitc = c(0, 11), join_lookup = TRUE)
+data <- load_rts(month = c(201901, 201912), sitc = c(00, 11), join_lookup = TRUE)
 
 data
-#> # A tibble: 64,357 x 26
-#>    MonthId FlowTypeId FlowType~1 Sitc1~2 Sitc1~3 Commo~4 Sitc2~5 Sitc2~6 GovRe~7
-#>      <int>      <int> <chr>      <chr>   <chr>     <int> <chr>   <chr>     <int>
-#>  1  201901          3 "Non-EU I~ 0       Food &~       0 00      Live a~       2
-#>  2  201904          3 "Non-EU I~ 0       Food &~       0 00      Live a~       2
-#>  3  201907          3 "Non-EU I~ 0       Food &~       0 00      Live a~       2
-#>  4  201910          3 "Non-EU I~ 0       Food &~       0 00      Live a~       2
-#>  5  201901          3 "Non-EU I~ 0       Food &~       0 00      Live a~       3
-#>  6  201904          3 "Non-EU I~ 0       Food &~       0 00      Live a~       3
-#>  7  201907          3 "Non-EU I~ 0       Food &~       0 00      Live a~       3
-#>  8  201910          3 "Non-EU I~ 0       Food &~       0 00      Live a~       3
-#>  9  201901          3 "Non-EU I~ 0       Food &~       0 00      Live a~       4
-#> 10  201904          3 "Non-EU I~ 0       Food &~       0 00      Live a~       4
-#> # ... with 64,347 more rows, 17 more variables: GovRegionCodeNumeric <chr>,
-#> #   GovRegionGroupCodeAlpha <chr>, GovRegionName <chr>,
-#> #   GovRegionGroupName <chr>, Area1 <chr>, Area1a <chr>, Area2 <chr>,
-#> #   Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>, CountryId <int>,
-#> #   CountryCodeNumeric <chr>, CountryCodeAlpha <chr>, CountryName <chr>,
-#> #   Value <dbl>, NetMass <dbl>, and abbreviated variable names
-#> #   1: FlowTypeDescription, 2: Sitc1Code, 3: Sitc1Desc, ...
+#> # A tibble: 54,265 × 26
+#>    MonthId FlowTypeId FlowTypeDescription   Sitc1Code Sitc1Desc CommoditySitc2Id
+#>      <int>      <int> <chr>                 <chr>     <chr>                <int>
+#>  1  201901          3 "Non-EU Imports     … 0         Food & l…                0
+#>  2  201904          3 "Non-EU Imports     … 0         Food & l…                0
+#>  3  201907          3 "Non-EU Imports     … 0         Food & l…                0
+#>  4  201910          3 "Non-EU Imports     … 0         Food & l…                0
+#>  5  201901          3 "Non-EU Imports     … 0         Food & l…                0
+#>  6  201904          3 "Non-EU Imports     … 0         Food & l…                0
+#>  7  201907          3 "Non-EU Imports     … 0         Food & l…                0
+#>  8  201910          3 "Non-EU Imports     … 0         Food & l…                0
+#>  9  201901          3 "Non-EU Imports     … 0         Food & l…                0
+#> 10  201904          3 "Non-EU Imports     … 0         Food & l…                0
+#> # ℹ 54,255 more rows
+#> # ℹ 20 more variables: Sitc2Code <chr>, Sitc2Desc <chr>, GovRegionId <int>,
+#> #   GovRegionCodeNumeric <chr>, GovRegionGroupCodeAlpha <chr>,
+#> #   GovRegionName <chr>, GovRegionGroupName <chr>, Area1 <chr>, Area1a <chr>,
+#> #   Area2 <chr>, Area2a <chr>, Area3 <chr>, Area3a <chr>, Area5a <chr>,
+#> #   CountryId <int>, CountryCodeNumeric <chr>, CountryCodeAlpha <chr>,
+#> #   CountryName <chr>, Value <dbl>, NetMass <dbl>
 ```
 
 Note: where relevant, BTTA data is [included in RTS
@@ -376,18 +372,16 @@ results. This function is also the workhorse (no pun intended) behind
 the other functions.
 
 ``` r
-data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)",
-    output = "tibble")
+data <- load_custom(endpoint = "Commodity", custom_search = "?$filter=Hs6Code eq '010129'&$expand=Exports($filter=MonthId ge 201901 and MonthId le 201912 and startswith(Trader/PostCode, 'CB8'); $expand=Trader)", output = "tibble")
 
 data
-#> # A tibble: 2 x 11
-#>   CommodityId Cn8Code  Hs2Code Hs4Code Hs6Code Hs2Desc~1 Hs4De~2 Hs6De~3 SitcC~4
-#>         <int> <chr>    <chr>   <chr>   <chr>   <chr>     <chr>   <chr>   <chr>  
-#> 1     1012910 01012910 01      0101    010129  Live ani~ Live h~ Live h~ 00150  
-#> 2     1012990 01012990 01      0101    010129  Live ani~ Live h~ Live h~ 00150  
-#> # ... with 2 more variables: Cn8LongDescription <chr>, Exports <list>, and
-#> #   abbreviated variable names 1: Hs2Description, 2: Hs4Description,
-#> #   3: Hs6Description, 4: SitcCommodityCode
+#> # A tibble: 2 × 11
+#>   CommodityId Cn8Code  Hs2Code Hs4Code Hs6Code Hs2Description Hs4Description    
+#>         <int> <chr>    <chr>   <chr>   <chr>   <chr>          <chr>             
+#> 1     1012910 01012910 01      0101    010129  Live animals   Live horses, asse…
+#> 2     1012990 01012990 01      0101    010129  Live animals   Live horses, asse…
+#> # ℹ 4 more variables: Hs6Description <chr>, SitcCommodityCode <chr>,
+#> #   Cn8LongDescription <chr>, Exports <list>
 ```
 
 Note that the variables expanded in the API query, Exports and Trader,
@@ -399,25 +393,25 @@ results. The second expanded variable (Trader) itself contains 8 columns
 ``` r
 tidyr::unnest(data, Exports, names_repair = "unique")
 #> New names:
-#> * `CommodityId` -> `CommodityId...1`
-#> * `CommodityId` -> `CommodityId...12`
-#> # A tibble: 27 x 14
-#>    CommodityId~1 Cn8Code Hs2Code Hs4Code Hs6Code Hs2De~2 Hs4De~3 Hs6De~4 SitcC~5
-#>            <int> <chr>   <chr>   <chr>   <chr>   <chr>   <chr>   <chr>   <chr>  
-#>  1       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#>  2       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#>  3       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#>  4       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#>  5       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#>  6       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#>  7       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#>  8       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#>  9       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#> 10       1012990 010129~ 01      0101    010129  Live a~ Live h~ Live h~ 00150  
-#> # ... with 17 more rows, 5 more variables: Cn8LongDescription <chr>,
-#> #   TraderId <int>, CommodityId...12 <int>, MonthId <int>, Trader <df[,8]>, and
-#> #   abbreviated variable names 1: CommodityId...1, 2: Hs2Description,
-#> #   3: Hs4Description, 4: Hs6Description, 5: SitcCommodityCode
+#> • `CommodityId` -> `CommodityId...1`
+#> • `CommodityId` -> `CommodityId...12`
+#> # A tibble: 27 × 14
+#>    CommodityId...1 Cn8Code Hs2Code Hs4Code Hs6Code Hs2Description Hs4Description
+#>              <int> <chr>   <chr>   <chr>   <chr>   <chr>          <chr>         
+#>  1         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#>  2         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#>  3         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#>  4         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#>  5         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#>  6         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#>  7         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#>  8         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#>  9         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#> 10         1012990 010129… 01      0101    010129  Live animals   Live horses, …
+#> # ℹ 17 more rows
+#> # ℹ 7 more variables: Hs6Description <chr>, SitcCommodityCode <chr>,
+#> #   Cn8LongDescription <chr>, TraderId <int>, CommodityId...12 <int>,
+#> #   MonthId <int>, Trader <df[,8]>
 ```
 
 ## MIT License
