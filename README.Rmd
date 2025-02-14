@@ -33,11 +33,11 @@ devtools::install_github("pvdmeulen/uktrade")
 ```
 ## HMRC data
 
-Her Majesty's Revenue & Customs (HMRC) is the United Kingdom's customs authority. Data on UK trade is available on their [uktradeinfo.com](https://www.uktradeinfo.com/) website, which is collected through a combination of customs declarations and Intrastat surveys (in the case of [some EU trade](https://www.gov.uk/intrastat)).
+His Majesty's Revenue & Customs (HMRC) is the United Kingdom's customs authority. Data on UK trade is available on their [uktradeinfo.com](https://www.uktradeinfo.com/) website, which is collected through a combination of customs declarations and Intrastat surveys (in the case of [some EU trade](https://www.gov.uk/intrastat)).
 
 In the beginning of 2021, the [uktradeinfo.com](https://www.uktradeinfo.com/) website was updated. This update also introduced an Application Programming Interface (API) for accessing bulk trade (and trader) data. For smaller trade data extracts (< 30,000 rows), the [online tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 
-For more information on the various API endpoints and options, see [HMRC's API documentation](https://www.uktradeinfo.com/api-documentation/). Note that this service and the website itself are in beta at the time of writing - features may still be added or changed (e.g. the [number of rows per page was increased](https://www.uktradeinfo.com/news/enhancement-made-to-uktradeinfo-api-service/) from 30,000 to 40,000 in December 2021).
+For more information on the various API endpoints and options, see [HMRC's API documentation](https://www.uktradeinfo.com/api-documentation/). Note that this service and the website itself were in beta at the time of developing this package, and even now features may still be added or changed (e.g. the [maximum number of rows per page was increased](https://www.uktradeinfo.com/news/enhancement-made-to-uktradeinfo-api-service/) from 30,000 to 40,000 in December 2021).
 
 ## This package
 
@@ -50,13 +50,13 @@ This package contains four functions:
 |`load_trader()`  |a function for loading trader data                     |:red_circle: *planned*                         |
 |`load_custom()`  |a function for loading a custom URL                    |:yellow_circle: experimental (use at own risk) |
 
-All of these functions will output a `dataframe` object (or `tibble`) with the desired data, and are able to keep track of paginated results (in batches of 40,000 rows) as well as the API request limit of 60 requests per minute.
+All of these functions will output a `dataframe` object (or `tibble`) with the desired data, and are able to keep track of paginated results as well as the API request limit of 60 requests per minute.
 
-The first three are convenient wrapper functions which should make loading basic datasets easier (with the assumption that further data manipulation will be done in R after loading the data). Of course, the API allows for extensive customisation in what data is obtained. For this purpose, `load_custom()` allows you to specify a custom URL instead. This allows you to be more specific in your request (and in the case of trader data, expand specific columns to get more information).
+The first three are convenient wrapper functions which should make loading basic datasets easier (with the assumption that further data manipulation will be done in R after loading the data). Of course, the API allows for extensive customisation in what data is obtained. For this purpose, `load_custom()` allows you to specify a custom URL instead. This allows you to be more specific in your request and/or summarise the data before it's loaded (and in the case of trader data, expand specific columns to get more information).
 
 ## Example using OTS and RTS data
 
-These functions are convenient wrappers for loading trade data - either detailed UK trade data using OTS (by CN8 code), or regional UK trade data using RTS (by SITC2 code). These functions will load the raw data and optionally join results with lookups obtained from the API (using, for example, the /Commodity and /Country endpoints). This makes data easy to read by humans, but also larger (more columns containing text).
+These functions are convenient wrappers for loading trade data - either detailed UK trade data using OTS (by CN8 code), or regional UK trade data using RTS (by SITC2 code). These functions will load the raw data and optionally join results with lookups obtained from the API (using, for example, the `/Commodity` and `/Country` endpoints). This makes data easy to read by humans, but also larger (more columns containing text).
 
 ### OTS
 
@@ -84,7 +84,7 @@ data <- load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011), j
 data
 ```
 
-Loading aggregate data (such as all spirits, HS4 code 2208) is possible too (in the background, this is loading commodity codes greater than or equal to 22080000 and less than or equal to 22089999). You can also see what URL the code is using by specifying `print_URL = TRUE`:
+Loading aggregate data (such as all spirits, HS4 code 2208) is possible too (in the background, this is loading commodity codes greater than or equal to 22080000 and less than or equal to 22089999). You can also see what URL the code is using by specifying `print_url = TRUE`:
 
 ```{r load_ots example with join and HS4}
 data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE, print_url = TRUE)
