@@ -40,7 +40,7 @@ For more information on the various API endpoints and options, see
 [HMRC’s API
 documentation](https://www.uktradeinfo.com/api-documentation/). Note
 that this service and the website itself are in beta at the time of
-writing - features may still be added or changed (e.g. the [number of
+writing - features may still be added or changed (e.g. the [maximum number of
 rows per page was
 increased](https://www.uktradeinfo.com/news/enhancement-made-to-uktradeinfo-api-service/)
 from 30,000 to 40,000 in December 2021).
@@ -58,7 +58,7 @@ This package contains four functions:
 
 All of these functions will output a `dataframe` object (or `tibble`)
 with the desired data, and are able to keep track of paginated results
-(in batches of 40,000 rows) as well as the API request limit of 60
+(in batches of 30,000 rows) as well as the API request limit of 60
 requests per minute.
 
 The first three are convenient wrapper functions which should make
