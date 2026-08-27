@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/pvdmeulen/uktrade/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pvdmeulen/uktrade)
 <!-- badges: end -->
 
-The goal of `uktrade` is to provide convenient wrapper functions for loading HMRC data in R.
+The goal of `uktrade` is to provide convenient wrapper functions for loading HMRC trade data in R.
 
 ## Installation
 
