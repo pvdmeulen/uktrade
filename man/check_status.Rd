@@ -4,10 +4,11 @@
 \alias{check_status}
 \title{A function to check the API's response. Used within `load_*()` functions.}
 \usage{
-check_status(res)
+check_status(resp)
 }
 \arguments{
-\item{res}{The API response obtained from https://api.uktradeinfo.com.}
+\item{resp}{The API response obtained from https://api.uktradeinfo.com, as
+returned by `httr2::req_perform()`.}
 }
 \description{
 A function to check the API's response. Used within `load_*()` functions.

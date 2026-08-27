@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R-CMD-check](https://github.com/pvdmeulen/uktrade/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pvdmeulen/uktrade/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/pvdmeulen/uktrade/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pvdmeulen/uktrade)
 <!-- badges: end -->
 
 The goal of `uktrade` is to provide convenient wrapper functions for loading HMRC data in R.
@@ -62,6 +63,11 @@ These functions are convenient wrappers for loading trade data - either detailed
 
 Loading all UK trade of single malt Scotch whisky (CN8 code 22083030) and bottled gin (22085011) for 2019 is done like so:
 
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+library(stringr)
+```
+
 ```{r load_ots example}
 library(uktrade)
 data <- load_ots(month = c(201901, 201912), commodity = c(22083030, 22085011), join_lookup = FALSE, output = "tibble")
@@ -97,8 +103,8 @@ When loading an HS2 code, or a SITC1 or SITC2 code, so-called Below Threshold Tr
 ```{r load_ots example with BTTA}
 data <- load_ots(month = c(202101, 202103), commodity = "03", join_lookup = TRUE, print_url = TRUE)
 
-library(dplyr)
-library(stringr)
+require(dplyr)
+require(stringr)
 
 data %>% 
   filter(stringr::str_detect(Sitc4Code, "-"))

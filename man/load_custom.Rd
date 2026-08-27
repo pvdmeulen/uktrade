@@ -37,9 +37,9 @@ load_custom(
 
 \item{debug}{A logical. Defaults to FALSE. Setting this to TRUE will print the number of datasets as they are being loaded as well as the elapsed time.}
 
-\item{use_proxy}{A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `use_proxy()` from `httr`.}
+\item{use_proxy}{A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `req_proxy()` from `httr2`.}
 
-\item{...}{Optional arguments to be passed along to `use_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr` documentation for more details.}
+\item{...}{Optional arguments to be passed along to `req_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr2` documentation for more details.}
 }
 \value{
 Returns a dataframe or tibble containing the API response

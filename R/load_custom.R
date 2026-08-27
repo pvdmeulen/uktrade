@@ -12,11 +12,16 @@
 #' @param timer A non-negative integer value (seconds) to keep track of the time taken so far. Defaults to NULL. This can be increased in case you are making multiple requests using this function in succession and do not want to exceed the API limit (60 requests per minute).
 #' @param print_url A logical. Defaults to FALSE. Setting this to TRUE will print the URL(s) used to load data to the console.
 #' @param debug A logical. Defaults to FALSE. Setting this to TRUE will print the number of datasets as they are being loaded as well as the elapsed time.
-#' @param use_proxy A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `use_proxy()` from `httr`.
-#' @param ... Optional arguments to be passed along to `use_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr` documentation for more details.
+#' @param use_proxy A logical. Defaults to FALSE. Setting this to TRUE will allow the use of a proxy connection using `req_proxy()` from `httr2`.
+#' @param ... Optional arguments to be passed along to `req_proxy()` when using a proxy connection (by setting use_proxy to TRUE). See the `httr2` documentation for more details.
 #'
-#' @importFrom httr GET
-#' @importFrom httr use_proxy
+#' @importFrom httr2 request
+#' @importFrom httr2 req_proxy
+#' @importFrom httr2 req_throttle
+#' @importFrom httr2 req_retry
+#' @importFrom httr2 req_error
+#' @importFrom httr2 req_perform
+#' @importFrom httr2 resp_body_json
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr as_tibble
 #'
@@ -57,6 +62,13 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
                         ...
 ){
 
+  # Validate arguments up front, before making any API calls:
+
+  check_output_arg(output)
+  check_logical_arg(print_url, "print_url")
+  check_logical_arg(debug, "debug")
+  check_logical_arg(use_proxy, "use_proxy")
+
   # Hard code the following variables for now - HMRC API does not paginate when
   # setting custom skip and top variables. The above will force the code to use
   # the pagination set by the API itself when a request exceeds some predefined
@@ -69,8 +81,6 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
   skip_interval <- NULL
   top <- NULL
 
-  max_page_size <- 4e4 # Used for a warning when skip_interval is greater
-
   # Continue with request:
 
   check_internet()
@@ -82,15 +92,9 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
   skip <- 0
   page <- 1
 
-  if(!is.null(skip_interval)){
-    if(skip_interval > max_page_size){
-      warning(paste0("Manual skip interval of ", skip_interval,
-                     " exceeds the maximum page size of ",
-                     max_page_size, ". Consider setting a lower skip interval."))
-    }
-  }
-
-  # Create timer reference point:
+  # Create timer reference point (kept for the `debug` message below; the
+  # 60 requests/minute API limit itself is now enforced automatically by
+  # `httr2::req_throttle()`, see below):
   timer <- if(is.null(timer)){ proc.time() } else { timer }
 
   # URL print message if set to TRUE:
@@ -128,17 +132,37 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
     # Print URL if set to TRUE:
     if(print_url == TRUE){message("URL ", request, ": ", url)}
 
-    # Get API response:
+    # Build the request:
+    req <- httr2::request(utils::URLencode(url))
 
     if(use_proxy == TRUE){
-
-      response <- httr::GET(utils::URLencode(url), httr::use_proxy(...))
-
-    } else {
-
-      response <- httr::GET(utils::URLencode(url))
-
+      req <- httr2::req_proxy(req, ...)
     }
+
+    # Throttle to HMRC's API limit of 60 requests/minute. `realm` shares this
+    # budget across *every* call made in the session - including the extra
+    # calls load_ots()/load_rts() make internally for lookups - so no manual
+    # request counting or Sys.sleep() bookkeeping is needed any more. Skipped
+    # under testthat so that mocked responses in tests aren't needlessly
+    # rate-limited/slowed down:
+    if(!identical(Sys.getenv("TESTTHAT"), "true")){
+      req <- httr2::req_throttle(req, rate = 60 / 60, realm = base_url)
+    }
+
+    # Automatically retry on transient server-side errors/rate limiting:
+    req <- httr2::req_retry(
+      req,
+      max_tries = 3,
+      is_transient = function(resp) httr2::resp_status(resp) %in%
+        c(429, 500, 502, 503, 504)
+    )
+
+    # Don't let httr2 throw on 4xx/5xx responses itself - check_status()
+    # below gives a more specific, HMRC-API-aware error message:
+    req <- httr2::req_error(req, is_error = function(resp) FALSE)
+
+    # Get API response:
+    response <- httr2::req_perform(req)
 
     # Check status:
     check_status(response)
@@ -146,23 +170,7 @@ load_custom <- function(base_url = "https://api.uktradeinfo.com",
     # Add request:
     request <- request + 1
 
-    # Get elapsed time:
-    elapsed_time <- proc.time()[[3]] - timer[[3]]
-
-    # Check if we've reached API limit (60/min):
-    if(request %% 59 == 0 & request/elapsed_time > 58/60){
-
-      # Rest for 5 seconds:
-      message(paste0("Nearly reached query limit (60/min). Pausing for ", 30,
-                     " seconds..."))
-
-      Sys.sleep(30)
-
-      message(paste0("Resuming download..."))
-
-    }
-
-    content <- jsonlite::fromJSON(rawToChar(response$content))
+    content <- httr2::resp_body_json(response, simplifyVector = TRUE)
 
     # Put response into data list:
 

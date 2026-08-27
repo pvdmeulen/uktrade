@@ -7,6 +7,8 @@
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R-CMD-check](https://github.com/pvdmeulen/uktrade/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pvdmeulen/uktrade/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/pvdmeulen/uktrade/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pvdmeulen/uktrade)
 <!-- badges: end -->
 
 The goal of `uktrade` is to provide convenient wrapper functions for
@@ -23,7 +25,7 @@ devtools::install_github("pvdmeulen/uktrade")
 
 ## HMRC data
 
-Her Majesty’s Revenue & Customs (HMRC) is the United Kingdom’s customs
+His Majesty’s Revenue & Customs (HMRC) is the United Kingdom’s customs
 authority. Data on UK trade is available on their
 [uktradeinfo.com](https://www.uktradeinfo.com/) website, which is
 collected through a combination of customs declarations and Intrastat
@@ -39,9 +41,9 @@ tool](https://www.uktradeinfo.com/trade-data/) may be sufficient.
 For more information on the various API endpoints and options, see
 [HMRC’s API
 documentation](https://www.uktradeinfo.com/api-documentation/). Note
-that this service and the website itself are in beta at the time of
-writing - features may still be added or changed (e.g. the [maximum number of
-rows per page was
+that this service and the website itself were in beta at the time of
+developing this package, and even now features may still be added or
+changed (e.g. the [maximum number of rows per page was
 increased](https://www.uktradeinfo.com/news/enhancement-made-to-uktradeinfo-api-service/)
 from 30,000 to 40,000 in December 2021).
 
@@ -49,25 +51,25 @@ from 30,000 to 40,000 in December 2021).
 
 This package contains four functions:
 
-| Function        | Description                                           | Status                                         |
-|-----------------|-------------------------------------------------------|------------------------------------------------|
-| `load_ots()`    | a function for loading Overseas Trade Statistics data | :yellow_circle: experimental (use at own risk) |
-| `load_rts()`    | a function for loading Regional Trade Statistics data | :yellow_circle: experimental (use at own risk) |
-| `load_trader()` | a function for loading trader data                    | :red_circle: *planned*                         |
-| `load_custom()` | a function for loading a custom URL                   | :yellow_circle: experimental (use at own risk) |
+| Function | Description | Status |
+|----|----|----|
+| `load_ots()` | a function for loading Overseas Trade Statistics data | :yellow_circle: experimental (use at own risk) |
+| `load_rts()` | a function for loading Regional Trade Statistics data | :yellow_circle: experimental (use at own risk) |
+| `load_trader()` | a function for loading trader data | :red_circle: *planned* |
+| `load_custom()` | a function for loading a custom URL | :yellow_circle: experimental (use at own risk) |
 
 All of these functions will output a `dataframe` object (or `tibble`)
 with the desired data, and are able to keep track of paginated results
-(in batches of 30,000 rows) as well as the API request limit of 60
-requests per minute.
+as well as the API request limit of 60 requests per minute.
 
 The first three are convenient wrapper functions which should make
 loading basic datasets easier (with the assumption that further data
 manipulation will be done in R after loading the data). Of course, the
 API allows for extensive customisation in what data is obtained. For
 this purpose, `load_custom()` allows you to specify a custom URL
-instead. This allows you to be more specific in your request (and in the
-case of trader data, expand specific columns to get more information).
+instead. This allows you to be more specific in your request and/or
+summarise the data before it’s loaded (and in the case of trader data,
+expand specific columns to get more information).
 
 ## Example using OTS and RTS data
 
@@ -75,7 +77,7 @@ These functions are convenient wrappers for loading trade data - either
 detailed UK trade data using OTS (by CN8 code), or regional UK trade
 data using RTS (by SITC2 code). These functions will load the raw data
 and optionally join results with lookups obtained from the API (using,
-for example, the /Commodity and /Country endpoints). This makes data
+for example, the `/Commodity` and `/Country` endpoints). This makes data
 easy to read by humans, but also larger (more columns containing text).
 
 ### OTS
@@ -147,7 +149,7 @@ data
 Loading aggregate data (such as all spirits, HS4 code 2208) is possible
 too (in the background, this is loading commodity codes greater than or
 equal to 22080000 and less than or equal to 22089999). You can also see
-what URL the code is using by specifying `print_URL = TRUE`:
+what URL the code is using by specifying `print_url = TRUE`:
 
 ``` r
 data <- load_ots(month = c(201901, 201912), commodity = 2208, join_lookup = TRUE, print_url = TRUE)
@@ -190,16 +192,8 @@ data <- load_ots(month = c(202101, 202103), commodity = "03", join_lookup = TRUE
 #> Loading data via the following URL(s):
 #> URL 1: https://api.uktradeinfo.com/OTS?$filter=(MonthId ge 202101 and MonthId le 202103) and ((CommodityId ge 03000000 and CommodityId le 03999999) or CommodityId eq 039999999)
 
-library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
-library(stringr)
+require(dplyr)
+require(stringr)
 
 data %>% 
   filter(stringr::str_detect(Sitc4Code, "-"))
@@ -330,7 +324,7 @@ done to avoid URLs being too long.
 data <- load_rts(month = c(201901, 201912), sitc = c(00, 11), join_lookup = TRUE)
 
 data
-#> # A tibble: 54,265 × 26
+#> # A tibble: 64,265 × 26
 #>    MonthId FlowTypeId FlowTypeDescription   Sitc1Code Sitc1Desc CommoditySitc2Id
 #>      <int>      <int> <chr>                 <chr>     <chr>                <int>
 #>  1  201901          3 "Non-EU Imports     … 0         Food & l…                0
@@ -343,7 +337,7 @@ data
 #>  8  201910          3 "Non-EU Imports     … 0         Food & l…                0
 #>  9  201901          3 "Non-EU Imports     … 0         Food & l…                0
 #> 10  201904          3 "Non-EU Imports     … 0         Food & l…                0
-#> # ℹ 54,255 more rows
+#> # ℹ 64,255 more rows
 #> # ℹ 20 more variables: Sitc2Code <chr>, Sitc2Desc <chr>, GovRegionId <int>,
 #> #   GovRegionCodeNumeric <chr>, GovRegionGroupCodeAlpha <chr>,
 #> #   GovRegionName <chr>, GovRegionGroupName <chr>, Area1 <chr>, Area1a <chr>,
